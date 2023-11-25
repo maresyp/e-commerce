@@ -19,7 +19,7 @@ class Profile(models.Model):
     street = models.CharField(max_length=255, null=True, blank=True)
     house_number = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.CharField(max_length=255, null=True, blank=True)
-    phone_number = postal_code = models.CharField(max_length=40, null=True, blank=True)
+    phone_number = models.CharField(max_length=40, null=True, blank=True)
     profile_image = models.ImageField(upload_to='profiles', null=True, blank=True, default='profiles/user-default.png')
 
     def __str__(self) -> str:
