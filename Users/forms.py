@@ -2,7 +2,7 @@ from django.forms import CharField, Form, ModelChoiceField, ModelForm, EmailFiel
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, FavouritesTags, Tag
+from .models import Profile
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -33,7 +33,7 @@ class ProfileForm(ModelForm):
         fields = ['city', 'street', 'house_number', 'postal_code', 'profile_image', 'phone_number', 'gender']
         labels = {
             'profile_image': 'Zdjęcie profilowe',
-            'city': 'Lokalizacja',
+            'city': 'Miasto',
             'street': 'Ulica',
             'house_number': 'Numer domu/mieszkania',
             'postal_code': 'Kod pocztowy',

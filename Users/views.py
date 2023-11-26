@@ -27,7 +27,6 @@ def loginUser(request):
 
         if user is not None:
             login(request, user)
-            Profile.objects.filter(user=user.id).update(is_active=True)
             return redirect(request.GET['next'] if 'next' in request.GET else 'account')
 
         else:
@@ -38,12 +37,8 @@ def loginUser(request):
 
 
 def logoutUser(request):
-
     # Get logged in user
     user = request.user
-
-    # Update user status
-    Profile.objects.filter(user=user.id).update(is_active=False)
 
     logout(request)
     messages.info(request, 'Pomyślnie wylogowano!')

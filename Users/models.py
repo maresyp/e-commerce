@@ -1,12 +1,6 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.password_validation import validate_password
 from django.db import models
 from django.contrib.auth.models import User
-
-
-
-# Create your models here.
-
 class Profile(models.Model):
     GENDER_CHOICES = [
         ('M', 'Mężczyzna'),
