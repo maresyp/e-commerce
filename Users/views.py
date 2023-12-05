@@ -43,10 +43,14 @@ def logoutUser(request):
 
     logout(request)
     messages.info(request, 'Pomyślnie wylogowano!')
-    return redirect('store')
+    return redirect('home_page')
 
 
 def registerUser(request):
+
+    # TODO:<maresyp>: This function should be aware of ShoppingCart model
+    # if they are present inside session ShoppingCart should be assigned to newly created user
+    # and expiration_date should be set to None
 
     page = 'register'
     form = CustomUserCreationForm()
