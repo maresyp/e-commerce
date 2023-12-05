@@ -33,7 +33,7 @@ def loginUser(request):
             messages.error(request, 'Nazwa użytkownika lub hasło jest niepoprawne.')
 
     context = {'page': page}
-    return render(request, 'users/login_register.html', context)
+    return render(request, 'Users/login_register.html', context)
 
 
 def logoutUser(request):
