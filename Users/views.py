@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 
+from cart.models import ShoppingCart
+
 from .forms import ChangePasswordForm, CustomUserCreationForm, ProfileForm
 from .models import Profile
 
@@ -48,10 +50,6 @@ def logoutUser(request):
 
 def registerUser(request):
 
-    # TODO:<maresyp>: This function should be aware of ShoppingCart model
-    # if they are present inside session ShoppingCart should be assigned to newly created user
-    # and expiration_date should be set to None
-
     page = 'register'
     form = CustomUserCreationForm()
 
@@ -74,7 +72,16 @@ def registerUser(request):
                 user.save()
                 messages.success(request, 'Konto użytkownika zostało utworzone!')
                 login(request, user)
-                return redirect('account')
+
+                # check if user has shopping cart in session
+                if 'cart_id' in request.session:
+                    cart_id = request.session['cart_id']
+                    user_cart = ShoppingCart.objects.get(pk=cart_id)
+                    user_cart.owner = user
+                    user_cart.expiration_date = None
+                    user_cart.save()
+
+                return redirect('home_page')
         else:
             messages.error(
                 request, 'Wystąpił problem podczas rejestracji')
