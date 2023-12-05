@@ -10,7 +10,7 @@ class Product(models.Model):
     price = models.IntegerField()
     quantity = models.IntegerField()
     description = models.TextField()
-    image = models.ImageField(upload_to='shop/images', default="")
+    image = models.ImageField(upload_to='shop/images', default="", null=True, blank=True)
 
     def __str__(self):
         return self.name
