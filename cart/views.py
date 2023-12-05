@@ -21,7 +21,7 @@ def cart(request):
         user_session = request.session
         if 'cart_id' in user_session:
             cart_id = user_session['cart_id']
-            user_cart = ShoppingCart.objects.get(pk=cart_id)
+            user_cart = ShoppingCart.objects.get_or_create(pk=cart_id)
 
     entries = CartEntry.objects.filter(
         Q(cart=user_cart),
