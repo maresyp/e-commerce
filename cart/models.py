@@ -10,7 +10,7 @@ class ShoppingCart(models.Model):
     expiration_date = models.DateTimeField(null=True)
 
     def __str__(self):
-        return f'Cart {self.id} with owner {self.owner}'
+        return f'Cart {self.id} owned by {self.owner} expires {self.expiration_date}'
 
 
 class CartEntry(models.Model):
@@ -20,4 +20,6 @@ class CartEntry(models.Model):
     quantity = models.IntegerField()
 
     def __str__(self):
-        return f'Entry {self.id} with {self.product} and quantity {self.quantity}'
+        if self.cart.owner:
+            return f'Entry {self.id} with {self.quantity} {self.product} owned by {self.cart.owner} '
+        return f'Entry {self.id} with {self.quantity} {self.product.name} owned by AnonymousUser expires {self.cart.expiration_date}'
