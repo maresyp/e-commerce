@@ -1,5 +1,6 @@
 import datetime
 
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -11,6 +12,7 @@ from .models import CartEntry, ShoppingCart
 # Create your views here.
 def cart(request):
     # check if request comes from logged in user
+    user_cart = None
     if request.user.is_authenticated:
         user = request.user
         user_cart, created = ShoppingCart.objects.get_or_create(owner=user)
@@ -19,9 +21,12 @@ def cart(request):
         user_session = request.session
         if 'cart_id' in user_session:
             cart_id = user_session['cart_id']
-            user_cart = ShoppingCart.objects.filter(pk=cart_id)
+            user_cart = ShoppingCart.objects.get(pk=cart_id)
 
-    entries = CartEntry.objects.filter(cart__in=user_cart)
+    entries = CartEntry.objects.filter(
+        Q(cart=user_cart),
+    )
+
     context = {'entries': entries}
 
     return render(request, 'cart/cart.html', context)
