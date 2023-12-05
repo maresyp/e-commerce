@@ -1,4 +1,12 @@
 {% extends 'main.html' %}
 {% block content %}
-
+    <div class="product-list">
+        {% for product in products %}
+        <div class="product">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <button class="add-to-cart" onclick="window.location.href='{% url "add_product" product_id=product.id quantity=1 %}'">Add to Cart</button>
+        </div>
+        {% endfor %}
+    </div>
 {% endblock %}
