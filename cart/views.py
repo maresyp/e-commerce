@@ -26,6 +26,9 @@ def cart(request):
     entries = CartEntry.objects.filter(
         Q(cart=user_cart),
     )
+    if entries:
+        for entry in entries:
+            entry.total_price = entry.quantity * entry.product.price
 
     context = {'entries': entries}
 
