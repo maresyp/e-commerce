@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
+
+from .forms import ChangePasswordForm, CustomUserCreationForm, ProfileForm
 from .models import Profile
-from .forms import CustomUserCreationForm, ProfileForm, ChangePasswordForm
 
 
 def loginUser(request):
@@ -42,7 +43,7 @@ def logoutUser(request):
 
     logout(request)
     messages.info(request, 'Pomyślnie wylogowano!')
-    return redirect('login')
+    return redirect('store')
 
 
 def registerUser(request):
@@ -75,7 +76,7 @@ def registerUser(request):
                 request, 'Wystąpił problem podczas rejestracji')
 
     context = {'page': page, 'form': form}
-    return render(request, 'users/login_register.html', context)
+    return render(request, 'Users/login_register.html', context)
 
 
 @login_required(login_url='login')
@@ -89,7 +90,7 @@ def userAccount(request):
         'profile': profile,
         'page': page
     }
-    return render(request, 'users/account.html', context)
+    return render(request, 'Users/account.html', context)
 
 
 @login_required(login_url='login')
@@ -141,4 +142,4 @@ def editAccount(request):
         'page': page,
     }
 
-    return render(request, 'users/user_profile_form.html', context)
+    return render(request, 'Users/user_profile_form.html', context)
