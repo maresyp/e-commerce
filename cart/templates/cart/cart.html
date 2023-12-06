@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+{% block content %}
+{% if entries %}
+<h1>Twój koszyk</h1>
+<ul>
+    {% for entry in entries %}
+        <li>{{ entry.product.name }}: {{ entry.quantity }} {{ entry.total_price }} Zł</li>
+        <li>Cena jednostkowa: {{ entry.product.price }} Zł</li>
+    {% endfor %}
+</ul>
+{% else %}
+    <h2>Nie dodałeś nic do koszyka.</h2>
+{% endif %}
+{% endblock %}

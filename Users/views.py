@@ -1,10 +1,13 @@
-from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
+
+from cart.models import ShoppingCart
+
+from .forms import ChangePasswordForm, CustomUserCreationForm, ProfileForm
 from .models import Profile
-from .forms import CustomUserCreationForm, ProfileForm, ChangePasswordForm
 
 
 def loginUser(request):
@@ -33,7 +36,7 @@ def loginUser(request):
             messages.error(request, 'Nazwa użytkownika lub hasło jest niepoprawne.')
 
     context = {'page': page}
-    return render(request, 'users/login_register.html', context)
+    return render(request, 'Users/login_register.html', context)
 
 
 def logoutUser(request):
@@ -42,7 +45,7 @@ def logoutUser(request):
 
     logout(request)
     messages.info(request, 'Pomyślnie wylogowano!')
-    return redirect('login')
+    return redirect('home_page')
 
 
 def registerUser(request):
@@ -69,13 +72,22 @@ def registerUser(request):
                 user.save()
                 messages.success(request, 'Konto użytkownika zostało utworzone!')
                 login(request, user)
-                return redirect('account')
+
+                # check if user has shopping cart in session
+                if 'cart_id' in request.session:
+                    cart_id = request.session['cart_id']
+                    user_cart = ShoppingCart.objects.get(pk=cart_id)
+                    user_cart.owner = user
+                    user_cart.expiration_date = None
+                    user_cart.save()
+
+                return redirect('home_page')
         else:
             messages.error(
                 request, 'Wystąpił problem podczas rejestracji')
 
     context = {'page': page, 'form': form}
-    return render(request, 'users/login_register.html', context)
+    return render(request, 'Users/login_register.html', context)
 
 
 @login_required(login_url='login')
@@ -89,7 +101,7 @@ def userAccount(request):
         'profile': profile,
         'page': page
     }
-    return render(request, 'users/account.html', context)
+    return render(request, 'Users/account.html', context)
 
 
 @login_required(login_url='login')
@@ -141,4 +153,4 @@ def editAccount(request):
         'page': page,
     }
 
-    return render(request, 'users/user_profile_form.html', context)
+    return render(request, 'Users/user_profile_form.html', context)
