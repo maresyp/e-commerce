@@ -4,9 +4,8 @@
 <header class="header">
     <div class="container container--narrow">
         <a href="" class="header__logo">
-            <img src="{% static 'images/logo.png' %} " alt="" />
+            <img src="{% static 'images/logo.png' %} " href="{% url 'home_page' %}" alt="Logo" />
         </a>
-        <p>#be like a professional</p>
 
         <nav class="header__nav">
             <input type="checkbox" id="responsive-menu" />
@@ -34,4 +33,13 @@
             </ul>
         </nav>
     </div>
+
+    
 </header>
+
+{% if page == 'store' %}
+
+<div class="subHeader">
+
+</div>
+{% endif %}
