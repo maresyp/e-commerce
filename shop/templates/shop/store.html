@@ -18,10 +18,8 @@
                 <div class="card__body dev">
                     <img class="avatar avatar--xl dev__avatar" src="{{product.imageURL}}" alt="Profile_logo"/>
                     <h3 class="dev__username">{{ product.name }}</h3>
-
-                    <p>{{ product.description }}</p>
-                    <p>Cena jednostkowa: {{ product.price }} Zł</p>
-                    <button button class="btn btn_main" onclick="window.location.href='{% url "add_product" product_id=product.id quantity=1 %}'">Add to Cart</button>
+                    <h3 class="dev__username">Cena: {{ product.price }} zł</h3>
+                    <button button class="btn btn--main" onclick="window.location.href='{% url "add_product" product_id=product.id quantity=1 %}'">Add to Cart</button>
                 </div>
             </div>
             {% endfor %}
