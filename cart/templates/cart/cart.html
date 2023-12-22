@@ -4,10 +4,15 @@
 <h1>Twój koszyk</h1>
 <ul>
     {% for entry in entries %}
-        <li>{{ entry.product.name }}: {{ entry.quantity }} {{ entry.total_price }} Zł</li>
+        <li>{{ entry.product.name }}: {{ entry.quantity }} Szt</li>
         <li>Cena jednostkowa: {{ entry.product.price }} Zł</li>
+        <li>Koszt: {{ entry.total_price }} Zł</li>
+        <button class="remove-from-cart" onclick="window.location.href='{% url "delete_product_from_cart" entry_id=entry.id %}'">Usuń z koszyka</button>
+        <br>
     {% endfor %}
 </ul>
+<br>
+<p>Podsumowanie: {{ total_price }} Zł</p>
 {% else %}
     <h2>Nie dodałeś nic do koszyka.</h2>
 {% endif %}
