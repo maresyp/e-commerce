@@ -68,6 +68,7 @@ def delete_product_from_cart(request, entry_id):
 
     entry.delete()
 
+    messages.success(request, 'Product deleted from cart')
     return redirect('cart')
 
 def get_or_create_shopping_cart(request) -> ShoppingCart:
