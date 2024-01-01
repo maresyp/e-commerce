@@ -91,13 +91,14 @@ img {
   position: sticky;
   z-index: 110;
   background-color: var(--color-main-light);
-  padding: 1.5rem 0;
 }
 
-.subheader > .container {
+.subHeader > .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 90%;
+  flex-direction: row-reverse;
 }
 
 .subHeader > .container > p {
@@ -117,10 +118,11 @@ img {
   align-items: center;
   list-style: none;
   gap: 6.5rem;
+  si
 }
 
 .subHeader__menuItem > a {
-  color: var(--color-sub-light);
+  color: var(--color-light);
   font-weight: 300;
 }
 

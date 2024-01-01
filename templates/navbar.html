@@ -36,8 +36,17 @@
 </header>
 
 {% if page == 'store' %}
-
 <div class="subHeader">
-
+    <div class="container container--narrow">
+        <nav class="subHeader__nav">
+            <ul class="subHeader__menu">
+                {% for category in categories %}
+                <li class="subHeader__menuItem">
+                    <a href="{% url 'store' category.id %}" class="btn btn--main">{{ category.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
 </div>
 {% endif %}
