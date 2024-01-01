@@ -17,10 +17,10 @@
                 {% endif %}
               </div>
               {% for category, subcats in category_subcategories.items %}
-                <h3>{{ category.name }}</h3>
+                <h4 style="display: table">{{ category.name }}</h4>
                 {% for subcategory in subcats %}
                   <div class="form__field"> 
-                    <label>
+                    <label style="display: table";>
                       <input type="checkbox" name="subcat" value="{{ subcategory.id }}"
                             {% if subcategory.id|stringformat:"i" in selected_subcategories %} checked {% endif %}>
                       {{ subcategory.name }}
@@ -29,8 +29,8 @@
                 {% endfor %}
               {% endfor %}
             
-              <input type="text" name="q" placeholder="Szukaj produktów..." value="{{ request.GET.q }}">
-              <button type="submit" class="btn btn--main">Filtruj</button>
+              <input  type="text" name="q" placeholder="Szukaj produktów..." value="{{ request.GET.q }}">
+              <button style="margin-top: 1.5rem" type="submit" class="btn btn--main">Filtruj</button>
               </form>
             </div>
           </div>
