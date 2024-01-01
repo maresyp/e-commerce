@@ -14,7 +14,7 @@
   background-color: var(--color-white);
   border: 1.5px solid var(--color-light);
   width: 33%;
-  height: auto;
+  height: fit-content;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   overflow: hidden;
