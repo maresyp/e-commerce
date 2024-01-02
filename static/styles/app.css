@@ -389,6 +389,28 @@ img {
 }
 
 /*=======================
+  Products
+========================*/
+
+.pro__name {
+  color: var(--color-sub);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  word-break: break-all;
+}
+
+.pro__price {
+  color: var(--color-sub);
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  word-break: break-all;
+}
+
+/*=======================
   Profile
 ========================*/
 

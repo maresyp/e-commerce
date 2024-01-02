@@ -3,6 +3,7 @@ import datetime
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.contrib import messages
 
 from shop.models import Product
 
@@ -75,5 +76,7 @@ def add_product(request, product_id, quantity: int):
         else:
             entry = CartEntry.objects.create(product=product, quantity=quantity, cart=user_cart)
             entry.save()
+
+    messages.success(request, 'Produkt dodany do koszyka!')
 
     return redirect('home_page')

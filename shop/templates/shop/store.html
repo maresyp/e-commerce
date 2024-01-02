@@ -29,7 +29,7 @@
                 {% endfor %}
               {% endfor %}
             
-              <input  type="text" name="q" placeholder="Szukaj produktów..." value="{{ request.GET.q }}">
+              <input style="display:block" type="text" name="q" placeholder="Szukaj produktów..." value="{{ request.GET.q }}">
               <button style="margin-top: 1.5rem" type="submit" class="btn btn--main">Filtruj</button>
               </form>
             </div>
@@ -40,11 +40,11 @@
 
       <div class="column column--2of3_mod">
           {% for product in products %}
-          <div class="card_33 text-center">
+          <div class="card text-center">
               <div class="card__body dev">
                   <img class="avatar avatar--xl dev__avatar" src="{{product.imageURL}}" alt="Profile_logo"/>
-                  <h3 class="dev__username">{{ product.name }}</h3>
-                  <h3 class="dev__username">Cena: {{ product.price }} zł</h3>
+                  <h3 class="pro__name">{{ product.name }}</h3>
+                  <h3 class="pro__price">Cena: {{ product.price }} zł</h3>
                   <button button class="btn btn--main" onclick="window.location.href='{% url "add_product" product_id=product.id quantity=1 %}'">Add to Cart</button>
               </div>
           </div>
