@@ -39,7 +39,7 @@
 
 .btn--main {
   background-color: var(--color-main-light);
-  color: var(--color-sub);
+  color: var(--color-light);
 }
 
 .btn--success {

@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.contrib import messages
 
 from shop.models import Product
 
@@ -89,7 +90,10 @@ def get_or_create_shopping_cart(request) -> ShoppingCart:
     if user_cart is None:
         raise Exception('Cart not found')
 
-    return user_cart
+
+    messages.success(request, 'Produkt dodany do koszyka!')
+
+    return redirect(request.META.get('HTTP_REFERER')
 
 def get_shopping_cart(request) -> ShoppingCart | None:
     user_cart = None
