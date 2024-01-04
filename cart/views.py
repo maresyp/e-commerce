@@ -44,7 +44,7 @@ def add_product_to_cart(request, product_id, quantity: int):
         entry.save()
 
     messages.success(request, 'Product added to cart')
-    return redirect('home_page')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 def delete_product_from_cart(request, entry_id):
     cart = get_shopping_cart(request)
@@ -90,9 +90,7 @@ def get_or_create_shopping_cart(request) -> ShoppingCart:
     if user_cart is None:
         raise Exception('Cart not found')
 
-    messages.success(request, 'Produkt dodany do koszyka!')
-
-    return redirect(request.META.get('HTTP_REFERER'))
+    return user_cart
 
 def get_shopping_cart(request) -> ShoppingCart | None:
     user_cart = None
