@@ -79,4 +79,4 @@ def add_product(request, product_id, quantity: int):
 
     messages.success(request, 'Produkt dodany do koszyka!')
 
-    return redirect('home_page')
+    return redirect(request.META.get('HTTP_REFERER'))

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from .models import MainCategory, SubCategory, Product
 
 def store(request, category_id=None):
@@ -39,3 +39,13 @@ def store(request, category_id=None):
     }
 
     return render(request, 'shop/store.html', context)
+
+def product(request, product_id):
+    page = 'product_details'
+    product = get_object_or_404(Product, id=product_id)
+
+    context = {
+        'page': page,
+        'product': product,
+    }
+    return render(request, 'shop/product.html', context)

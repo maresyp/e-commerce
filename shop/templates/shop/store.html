@@ -42,10 +42,12 @@
           {% for product in products %}
           <div class="card text-center">
               <div class="card__body dev">
-                  <img class="avatar avatar--xl dev__avatar" src="{{product.imageURL}}" alt="Profile_logo"/>
+                  <a href="{% url 'product' product_id=product.id %}">
+                    <img class="avatar avatar--xl dev__avatar" src="{{product.imageURL}}" alt="Profile_logo"/>
+                  </a>
                   <h3 class="pro__name">{{ product.name }}</h3>
                   <h3 class="pro__price">Cena: {{ product.price }} zł</h3>
-                  <button button class="btn btn--main" onclick="window.location.href='{% url "add_product" product_id=product.id quantity=1 %}'">Add to Cart</button>
+                  <button button class="btn btn--main" onclick="window.location.href='{% url "add_product" product_id=product.id quantity=1 %}'">Do koszyka</button>
               </div>
           </div>
           {% endfor %}
