@@ -1,5 +1,6 @@
 {% extends 'main.html' %}
 {% block content %}
+
 <main class="settingsPage my-xl">
   <div class="container">
     <div class="layout">
@@ -16,6 +17,7 @@
                   <form class="form" action="{% url 'store' %}" method="get">
                 {% endif %}
               </div>
+                    
               {% for category, subcats in category_subcategories.items %}
                 <h4 style="display: table">{{ category.name }}</h4>
                 {% for subcategory in subcats %}
