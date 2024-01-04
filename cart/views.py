@@ -90,10 +90,9 @@ def get_or_create_shopping_cart(request) -> ShoppingCart:
     if user_cart is None:
         raise Exception('Cart not found')
 
-
     messages.success(request, 'Produkt dodany do koszyka!')
 
-    return redirect(request.META.get('HTTP_REFERER')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 def get_shopping_cart(request) -> ShoppingCart | None:
     user_cart = None
