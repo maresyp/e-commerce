@@ -1,19 +1,55 @@
 {% extends 'main.html' %}
+
 {% block content %}
-{% if entries %}
-<h1>Twój koszyk</h1>
-<ul>
-    {% for entry in entries %}
-        <li>{{ entry.product.name }}: {{ entry.quantity }} Szt</li>
-        <li>Cena jednostkowa: {{ entry.product.price }} Zł</li>
-        <li>Koszt: {{ entry.total_price }} Zł</li>
-        <button class="remove-from-cart" onclick="window.location.href='{% url "delete_product_from_cart" entry_id=entry.id %}'">Usuń z koszyka</button>
-        <br>
-    {% endfor %}
-</ul>
-<br>
-<p>Podsumowanie: {{ total_price }} Zł</p>
-{% else %}
-    <h2>Nie dodałeś nic do koszyka.</h2>
-{% endif %}
+
+<!-- Main Section -->
+<main class="settingsPage profile my-md">
+  <div class="container">
+    <div class="layout">
+      <div class="column column--2of3">
+        <div class="cart__title">
+          <h3 class="title">Produkty w koszyku:</h3>
+        </div>
+
+        {% if entries %}
+          {% for entry in entries %}
+            <div class="card text-center">
+              <div class="card__body dev">
+                <a class="settings__title" href="{% url 'product' entry.product.id %}">
+                  <img class="avatar avatar--md" src="{{ entry.product.imageURL }}" alt="Product_image" href="{% url "delete_product_from_cart" entry_id=entry.id %}"/>
+                  <p class="settings__title">{{ entry.product.name }}</p>
+                </a>
+
+                <a href="" class="btn">&#10134;</a>
+                <p class="settings__title">{{ entry.quantity }}</p>
+                <a href="" class="btn">&#10133;</a>
+                <a href="{% url "delete_product_from_cart" entry_id=entry.id %}" class="btn btn--error">&#128465;</a>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="card text-center">
+            <div class="card__body dev">
+              <p class="settings__title">Brak produktów w koszyku.</p>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="column column--1of3">
+        <div class="card text-center">
+          <div class="card__body dev">
+            <h2 class="dev__username">Podsumowanie:</h2>
+            <p class="dev__fullname">Liczba produktów: {{ num_of_products }}.</p>
+            <p class="dev__location">Wartość całkowita: {{ total_price }} zł</p>
+
+            <a class="tag tag--pill tag--main settings__btn tag--lg" href=""><i
+              class="im im-plus"></i>Zapłać</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
 {% endblock %}

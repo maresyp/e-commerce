@@ -19,14 +19,16 @@ def cart(request):
     entries = CartEntry.objects.filter(
         Q(cart=user_cart),
     )
-    total = 0.0
+    total_price = 0.0
+    num_of_products = 0
 
     if entries:
         for entry in entries:
             entry.total_price = entry.quantity * entry.product.price
-            total += entry.total_price
+            total_price += entry.total_price
+            num_of_products += entry.quantity
 
-    context = {'entries': entries, 'total_price': total}
+    context = {'entries': entries, 'total_price': total_price, 'num_of_products': num_of_products}
 
     return render(request, 'cart/cart.html', context)
 
