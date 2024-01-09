@@ -14,16 +14,23 @@
         {% if entries %}
           {% for entry in entries %}
             <div class="card text-center">
-              <div class="card__body dev">
-                <a class="settings__title" href="{% url 'product' entry.product.id %}">
+              <div class="cart__card">
+                <a style="display:flex;" class="cart__p" href="{% url 'product' entry.product.id %}">
                   <img class="avatar avatar--md" src="{{ entry.product.imageURL }}" alt="Product_image" href="{% url "delete_product_from_cart" entry_id=entry.id %}"/>
-                  <p class="settings__title">{{ entry.product.name }}</p>
+                </a>
+                <a style="display:flex;" class="cart__p" href="{% url 'product' entry.product.id %}">
+                  <p class="cart__p">{{ entry.product.name }}</p>
                 </a>
 
-                <a href="" class="btn">&#10134;</a>
-                <p class="settings__title">{{ entry.quantity }}</p>
-                <a href="" class="btn">&#10133;</a>
-                <a href="{% url "delete_product_from_cart" entry_id=entry.id %}" class="btn btn--error">&#128465;</a>
+                <p class="cart__p">Łącznie: {{ entry.total_price }} zł</p>
+
+
+                <div class="cart__buttons">
+                  <a href="{% url "decrease_product_quantity" entry_id=entry.id %}" class="btn">&#10134;</a>
+                  <p class="cart__p">{{ entry.quantity }}</p>
+                  <a href="{% url "increase_product_quantity" entry_id=entry.id %}" class="btn">&#10133;</a>
+                  <a href="{% url "delete_product_from_cart" entry_id=entry.id %}" class="btn btn--error">&#128465;</a>
+                </div>
               </div>
             </div>
           {% endfor %}

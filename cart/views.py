@@ -45,7 +45,7 @@ def add_product_to_cart(request, product_id, quantity: int):
         entry = CartEntry.objects.create(product=product, quantity=quantity, cart=user_cart)
         entry.save()
 
-    messages.success(request, 'Product added to cart')
+    messages.success(request, 'Dodano produkt do koszyka')
     return redirect(request.META.get('HTTP_REFERER'))
 
 def delete_product_from_cart(request, entry_id):
@@ -56,22 +56,22 @@ def delete_product_from_cart(request, entry_id):
         return redirect('cart')
 
     if cart.owner is not None and cart.owner != request.user:
-        messages.error(request, 'You are not allowed to delete this product')
+        messages.error(request, 'Nie masz uprawnień, aby usunąć ten produkt')
         return redirect('cart')
 
     entry = CartEntry.objects.get(pk=entry_id)
 
     if entry is None:
-        messages.error(request, 'Entry not found')
+        messages.error(request, 'Pozycji nie znaleziono')
         return redirect('cart')
 
     if entry.cart != cart:
-        messages.error(request, 'You are not allowed to delete this product')
+        messages.error(request, 'Nie masz uprawnień, aby usunąć ten produkt')
         return redirect('cart')
 
     entry.delete()
 
-    messages.success(request, 'Product deleted from cart')
+    messages.success(request, 'Produkt został usunięty z koszyka')
     return redirect('cart')
 
 def get_or_create_shopping_cart(request) -> ShoppingCart:
@@ -90,7 +90,7 @@ def get_or_create_shopping_cart(request) -> ShoppingCart:
             user_session['cart_id'] = str(user_cart.id)
 
     if user_cart is None:
-        raise Exception('Cart not found')
+        raise Exception('Koszyka nie znaleziono')
 
     return user_cart
 
@@ -107,3 +107,16 @@ def get_shopping_cart(request) -> ShoppingCart | None:
             user_cart = ShoppingCart.objects.get(pk=cart_id)
 
     return user_cart
+
+def increase_product_quantity(request, entry_id):
+    entry = get_object_or_404(CartEntry, pk=entry_id)
+    entry.quantity += 1
+    entry.save()
+    return redirect('cart')
+
+def decrease_product_quantity(request, entry_id):
+    entry = get_object_or_404(CartEntry, pk=entry_id)
+    if entry.quantity > 1:
+        entry.quantity -= 1
+        entry.save()
+    return redirect('cart')

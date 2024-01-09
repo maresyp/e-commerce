@@ -435,6 +435,27 @@ img {
   color: var(--color-sub);
 }
 
+.cart__card{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.cart__buttons {
+  display:flex;
+  justify-content: end;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.cart__p {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-sub);
+}
+
 /*=======================
   Profile
 ========================*/
