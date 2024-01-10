@@ -1,11 +1,15 @@
 import os
+from pathlib import Path
+
 import django
+from django.contrib.auth.models import User
+from django.core.files import File
+
+from shop.models import MainCategory, Product, SubCategory
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'e_commerce.settings')
 django.setup()
 
-from django.contrib.auth.models import User
-from shop.models import MainCategory, SubCategory, Product
 
 def create_categories():
     categories = {
@@ -21,7 +25,7 @@ def create_categories():
             SubCategory.objects.get_or_create(name=sub_cat, mainCategory=main_cat_obj)
         print(f"Kategoria główna '{main_cat}' oraz podkategorie zostały utworzone.")
 
-def create_users():
+def create_users() -> None:
     # Tworzenie superusera
     try:
         User.objects.create_superuser('admin', 'admin@email.com', 'admin')
@@ -49,15 +53,16 @@ def create_pool_balls():
         product_description = f'Bila numer {i} do gry w pool, zapewniająca precyzję i trwałość.'
 
         try:
-            product, created = Product.objects.get_or_create(
-                name=product_name,
-                defaults={
-                    'description': product_description,
-                    'category': sub_cat,
-                    'price': 89 + 2*i,
-                    'quantity': 123 - 2*i,
-                    'product_image': f'D:\Repositories\e-commerce\static\images\shop\images\Ball_{i}.jpg'
-                }
+            with Path(f'static/images/shop/images/Ball_{i}.jpg').open('rb') as file:
+                product, created = Product.objects.get_or_create(
+                    name=product_name,
+                    defaults={
+                        'description': product_description,
+                        'category': sub_cat,
+                        'price': 89 + 2*i,
+                        'quantity': 123 - 2*i,
+                        'product_image': File(file),
+                    },
             )
             if created:
                 print(f"Produkt '{product_name}' został utworzony.")
