@@ -2,13 +2,13 @@ import os
 from pathlib import Path
 
 import django
-from django.contrib.auth.models import User
-from django.core.files import File
-
-from shop.models import MainCategory, Product, SubCategory
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'e_commerce.settings')
 django.setup()
+
+from django.contrib.auth.models import User
+from django.core.files import File
+from shop.models import MainCategory, Product, SubCategory
 
 
 def create_categories():
