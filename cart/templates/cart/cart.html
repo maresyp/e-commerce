@@ -50,8 +50,10 @@
             <p class="dev__fullname">Liczba produktów: {{ num_of_products }}.</p>
             <p class="dev__location">Wartość całkowita: {{ total_price }} zł</p>
 
+            {% if total_price %}
             <a class="tag tag--pill tag--main settings__btn tag--lg" href=""><i
-              class="im im-plus"></i>Zapłać</a>
+              class="im im-plus"></i>Złóż zamówienie</a>
+            {% endif %}
           </div>
         </div>
       </div>
