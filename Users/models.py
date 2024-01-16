@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     GENDER_CHOICES = [
-        ('M', 'Mężczyzna'),
+        ('M', 'Mężczyzna'), 
         ('K', 'Kobieta'),
     ]
 
@@ -27,5 +27,3 @@ class Profile(models.Model):
         except Exception:
             url = ''
         return url
-
-

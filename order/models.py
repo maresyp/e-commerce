@@ -13,7 +13,7 @@ class Order(models.Model):
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, unique=True, editable=False)
     date_of_order = models.DateTimeField(null=True)
-    owner = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     city = models.CharField(max_length=50, null=True, blank=True)
     street = models.CharField(max_length=255, null=True, blank=True)
     house_number = models.CharField(max_length=255, null=True, blank=True)
@@ -33,4 +33,3 @@ class OrderEntry(models.Model):
 
     def __str__(self):
         return f'Entry {self.id} with {self.quantity} {self.product} from order {self.oreder.id}'
-

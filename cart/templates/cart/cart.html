@@ -51,7 +51,7 @@
             <p class="dev__location">Wartość całkowita: {{ total_price }} zł</p>
 
             {% if total_price %}
-            <a class="tag tag--pill tag--main settings__btn tag--lg" href=""><i
+            <a class="tag tag--pill tag--main settings__btn tag--lg" href="{% url "order_summary" %}"><i
               class="im im-plus"></i>Złóż zamówienie</a>
             {% endif %}
           </div>

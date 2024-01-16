@@ -23,3 +23,4 @@ class CartEntry(models.Model):
         if self.cart.owner:
             return f'Entry {self.id} with {self.quantity} {self.product} owned by {self.cart.owner} '
         return f'Entry {self.id} with {self.quantity} {self.product.name} owned by AnonymousUser expires {self.cart.expiration_date}'
+    

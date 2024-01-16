@@ -1,0 +1,64 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+
+<!-- Main Section -->
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+          <div class="formHead">
+              <a class="tag tag--pill tag--main settings__btn tag--lg" href="{% url 'cart' %}">
+                  <i class="im im-plus"></i>Powrót</a>
+          </div>
+          <div class="formHead" style="display: flex; justify-content: center;">
+              <h3 style="display: contents;">Podsumowanie koszyka:</h3>
+          </div>
+          <br>
+
+          {% for item in cart_items %}
+          <div class="card text-center">
+            <div class="cart__card">
+              <a style="display:flex;" class="cart__p" href="{% url 'product' item.product.id %}">
+                <img class="avatar avatar--md" src="{{ item.product.imageURL }}" alt="Product_image" href="{% url "delete_product_from_cart" entry_id=item.id %}"/>
+              </a>
+              <a style="display:flex;" class="cart__p" href="{% url 'product' item.product.id %}">
+                <p class="cart__p">{{ item.product.name }}</p>
+              </a>
+
+              <p class="cart__p">Łącznie: {{ item.total_price }} zł</p>
+            </div>
+          </div>
+          {% endfor %}
+
+          <div class="formHead">
+            <h3 style="display: contents;">Adres dostawy:</h3>
+          </div>
+
+          <form class="form" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              {% for field in form %}
+              <div class="form__field">
+                  <label for="formInput#text">{{field.label}}</label>
+                  {{field}}
+
+                  {% for error in field.errors %}
+                  <p style="color: red;">{{error}}</p>
+                  {% endfor %}
+              </div>
+              {% endfor %}
+
+              <div class="formHead" style="display: flex; justify-content: end;">
+                <h3 style="display: contents;">Kwota do zapłaty: {{ total_price }} zł</h3>
+              </div>
+
+              <div class="settings__saveBtn">
+                  <input class="btn tag--main btn--main my-md tag--pill" type="submit" value="Zapłać"/>
+              </div>
+          </form>
+        </div>
+    </div>
+</main>
+
+{% endblock content %}
