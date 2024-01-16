@@ -53,16 +53,15 @@ def create_pool_balls():
         product_description = f'Bila numer {i} do gry w pool, zapewniająca precyzję i trwałość.'
 
         try:
-            with Path(f'static/images/shop/images/Ball_{i}.jpg').open('rb') as file:
-                product, created = Product.objects.get_or_create(
-                    name=product_name,
-                    defaults={
-                        'description': product_description,
-                        'category': sub_cat,
-                        'price': 89 + 2*i,
-                        'quantity': 123 - 2*i,
-                        'product_image': File(file),
-                    },
+            product, created = Product.objects.get_or_create(
+                name=product_name,
+                defaults={
+                    'description': product_description,
+                    'category': sub_cat,
+                    'price': 89 + 2*i,
+                    'quantity': 123 - 2*i,
+                    'product_image': str(Path(f'shop/images/Ball_{i}.jpg')),
+                },
             )
             if created:
                 print(f"Produkt '{product_name}' został utworzony.")
@@ -82,8 +81,8 @@ def create_pool_balls():
                 'category': sub_cat,
                 'price': 199,
                 'quantity': 4,
-                'product_image': f'D:\Repositories\e-commerce\static\images\shop\images\Ball_white.jpg'
-            }
+                'product_image': str(Path('shop/images/Ball_white.jpg')),
+            },
         )
         if created:
             print(f"Produkt '{product_name}' został utworzony.")
@@ -113,8 +112,8 @@ def create_snooker_balls():
                     'category': sub_cat,
                     'price': 89,
                     'quantity': 123,
-                    'product_image': f'D:\Repositories\e-commerce\static\images\shop\images\Ball_{color}.jpg'
-                }
+                    'product_image': str(Path(f'shop/images/Ball_{color}.jpg')),
+                },
             )
             if created:
                 print(f"Produkt '{product_name}' został utworzony.")
