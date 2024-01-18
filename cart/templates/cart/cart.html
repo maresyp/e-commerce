@@ -16,7 +16,7 @@
             <div class="card text-center">
               <div class="cart__card">
                 <a style="display:flex;" class="cart__p" href="{% url 'product' entry.product.id %}">
-                  <img class="avatar avatar--md" src="{{ entry.product.imageURL }}" alt="Product_image" href="{% url "delete_product_from_cart" entry_id=entry.id %}"/>
+                  <img class="avatar avatar--md" src="{{ entry.product.imageURL }}" alt="Product_image" href="{% url 'product' entry.product.id %}"/>
                 </a>
                 <a style="display:flex;" class="cart__p" href="{% url 'product' entry.product.id %}">
                   <p class="cart__p">{{ entry.product.name }}</p>

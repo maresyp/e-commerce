@@ -21,6 +21,9 @@ class Order(models.Model):
     phone_number = models.CharField(max_length=40, null=True, blank=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='1')
 
+    def total_value(self):
+        return sum(entry.product.price * entry.quantity for entry in self.orderentry_set.all())
+
     def __str__(self):
         return f'Order {self.id} owned by {self.owner}'
 
@@ -31,5 +34,8 @@ class OrderEntry(models.Model):
     product = models.ForeignKey('shop.Product', on_delete=models.CASCADE)
     quantity = models.IntegerField()
 
+    def total_price(self):
+        return self.quantity * self.product.price
+
     def __str__(self):
-        return f'Entry {self.id} with {self.quantity} {self.product} from order {self.oreder.id}'
+        return f'Entry {self.id} with {self.quantity} {self.product} from order {self.order.id}'

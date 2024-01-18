@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 
 from cart.models import ShoppingCart
+from order.models import Order, OrderEntry
 
 from .forms import ChangePasswordForm, CustomUserCreationForm, ProfileForm
 from .models import Profile
@@ -95,11 +96,16 @@ def userAccount(request):
     page = 'account'
     user = request.user
     profile = request.user.profile
+    
+    user_orders = Order.objects.filter(owner=request.user).order_by('-date_of_order')
+    order_entries = {order.id: OrderEntry.objects.filter(order=order) for order in user_orders}
 
     context = {
         'user': user,
         'profile': profile,
-        'page': page
+        'page': page,
+        'user_orders': user_orders,
+        'order_entries': order_entries,
     }
     return render(request, 'Users/account.html', context)
 

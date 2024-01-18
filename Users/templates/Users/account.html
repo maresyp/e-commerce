@@ -34,10 +34,59 @@
 
 
       <div class="column column--2of3">
-        
+        <div class="settings" style="justify-content: start;">
+          <h3 class="settings__title">Historia zamówień</h3>
+        </div>
+ 
+        <table class="settings__table">
+          {% for order in user_orders %}
+          <tr class="code-row">
+            <td class="settings__tableInfo">
+              <h5 class="cart__p"><b>Numer zamówienia:</b> {{ order.id }}</h5>
+              <h5 class="cart__p"><b>Data zamówienia:</b> {{ order.date_of_order }}</h5>
+              <h5 class="cart__p"><b>Status zamówienia:</b> {{ order.get_status_display }}</h5>
+              <div class="cart__buttons">
+                <a href="javascript:void(0);" class="btn" style="padding-right: 1rem; padding-left: 1rem;" onclick="toggleOrderDetails('order-details-{{ order.id }}')">&#128317;</a>
+              </div>
+            </td>
+          </tr>
+          <tr class="code-row" id="order-details-{{ order.id }}" style="display: none;">
+            <td colspan="5">
+              <div class="code-container">
+                {% for entry in order.orderentry_set.all %}
+                <div class="card text-center">
+                  <div class="cart__card">
+                    <a style="display:flex;" class="cart__p" href="{% url 'product' entry.product.id %}">
+                      <img class="avatar avatar--md" src="{{ entry.product.imageURL }}" alt="Product_image" href="{% url 'product' entry.product.id %}"/>
+                    </a>
+                    <a style="display:flex;" class="cart__p" href="{% url 'product' entry.product.id %}">
+                      <p class="cart__p">{{ entry.product.name }}</p>
+                    </a>
+                    <p class="cart__p">Wartość: {{ entry.total_price }} zł</p>
+                  </div>
+                </div>
+                {% endfor %}
+                <h4 class="cart__p" style="display: flex; justify-content: flex-end; font-size: x-large;"><b>Zapłacono:</b> {{ order.total_value }} zł</h4>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <p>Brak zamówień.</p>
+          {% endfor %}
+        </table>
       </div>
     </div>
   </div>
-</main>
 
+  <script>
+    function toggleOrderDetails(id) {
+      var element = document.getElementById(id);
+      if (element.style.display === "none") {
+        element.style.display = "table-row";
+      } else {
+        element.style.display = "none";
+      }
+    }
+  </script>
+</main>
 {% endblock %}

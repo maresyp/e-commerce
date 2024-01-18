@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from cart.views import get_shopping_cart
@@ -22,6 +23,7 @@ def order_summary(request):
             order = form.save(commit=False)
             if request.user.is_authenticated:
                 order.owner = request.user
+            order.date_of_order = timezone.now()
             order.save()
 
             for item in cart_items:
@@ -32,7 +34,7 @@ def order_summary(request):
 
             messages.success(request, 'Złożono zamówienie.')
             if request.user.is_authenticated:
-                return redirect('userAccount')
+                return redirect('account')
             else:
                 return redirect('store')
     else:

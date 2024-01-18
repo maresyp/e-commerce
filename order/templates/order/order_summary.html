@@ -20,10 +20,13 @@
           <div class="card text-center">
             <div class="cart__card">
               <a style="display:flex;" class="cart__p" href="{% url 'product' item.product.id %}">
-                <img class="avatar avatar--md" src="{{ item.product.imageURL }}" alt="Product_image" href="{% url "delete_product_from_cart" entry_id=item.id %}"/>
+                <img class="avatar avatar--md" src="{{ item.product.imageURL }}" alt="Product_image" href="{% url 'product' item.product.id %}"/>
               </a>
               <a style="display:flex;" class="cart__p" href="{% url 'product' item.product.id %}">
                 <p class="cart__p">{{ item.product.name }}</p>
+              </a>
+              <a style="display:flex;" class="cart__p" href="{% url 'product' item.product.id %}">
+                <p class="cart__p">Sztuk: {{ item.quantity }}</p>
               </a>
 
               <p class="cart__p">Łącznie: {{ item.total_price }} zł</p>
