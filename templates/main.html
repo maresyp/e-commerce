@@ -44,10 +44,24 @@
     
 </body>
 
+
+<footer class="footer">
+    <div class="container" style="
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;">
+        <p class="footer__text">© 2024 CueMaster Store. Wszystkie prawa zastrzeżone.</p>
+        <p class="footer__text">
+            <a href="{% url 'privacy_policy' %}">Polityka prywatności</a> |
+            <a href="{% url 'cookie_policy' %}">Polityka cookies</a> |
+            <a href="{% url 'terms_conditions' %}">Regulamin sklepu</a>
+        </p>
+    </div>
+</footer>
+
 <script src="{% static 'js/app.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
 <script src="{% static 'js/selectedCategories.js' %}"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
-
 </html>
