@@ -6,4 +6,4 @@ class CartConfig(AppConfig):
     name = 'cart'
 
     def ready(self):
-        import order.signals
+        import cart.signals
