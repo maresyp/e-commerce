@@ -7,7 +7,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'e_commerce.settings')
 django.setup()
 
 from django.contrib.auth.models import User
-from django.core.files import File
 from shop.models import MainCategory, Product, SubCategory
 
 
@@ -122,9 +121,165 @@ def create_snooker_balls():
         except Exception as e:
             print(f"Nie można utworzyć produktu '{product_name}': {e}")
 
+def create_snooker_sticks():
+    main_cat, _ = MainCategory.objects.get_or_create(name='Kije')
+    sub_cat, _ = SubCategory.objects.get_or_create(name='Kije snookerowe', mainCategory=main_cat)
+
+    product_name = 'Kij Snookerowy'
+    product_description = 'Kij snookerowy, zapewniający precyzję i trwałość.'
+
+    try:
+        product, created = Product.objects.get_or_create(
+            name=product_name,
+            defaults={
+                'description': product_description,
+                'category': sub_cat,
+                'price': 325,
+                'quantity': 123,
+                'product_image': str(Path('shop/images/Kij_snooker.png')),
+            },
+        )
+        if created:
+            print(f"Produkt '{product_name}' został utworzony.")
+        else:
+            print(f"Produkt '{product_name}' już istnieje.")
+    except Exception as e:
+        print(f"Nie można utworzyć produktu '{product_name}': {e}")
+
+def create_biliard_sticks():
+    main_cat, _ = MainCategory.objects.get_or_create(name='Kije')
+    sub_cat, _ = SubCategory.objects.get_or_create(name='Kije bilardowe pool', mainCategory=main_cat)
+
+    product_name = 'Kij Bilardowy'
+    product_description = 'Kij bilardowy, zapewniający precyzję i trwałość.'
+
+    try:
+        product, created = Product.objects.get_or_create(
+            name=product_name,
+            defaults={
+                'description': product_description,
+                'category': sub_cat,
+                'price': 420,
+                'quantity': 123,
+                'product_image': str(Path('shop/images/Kij_bilardowy.jpg')),
+            },
+        )
+        if created:
+            print(f"Produkt '{product_name}' został utworzony.")
+        else:
+            print(f"Produkt '{product_name}' już istnieje.")
+    except Exception as e:
+        print(f"Nie można utworzyć produktu '{product_name}': {e}")
+
+def create_snooker_triangle():
+    main_cat, _ = MainCategory.objects.get_or_create(name='Trójkąty')
+    sub_cat, _ = SubCategory.objects.get_or_create(name='Snookerowe', mainCategory=main_cat)
+
+    product_name = 'Trójkąt snooker'
+    product_description = 'Trójkąt snookerowy, zapewniający precyzję i trwałość.'
+
+    try:
+        product, created = Product.objects.get_or_create(
+            name=product_name,
+            defaults={
+                'description': product_description,
+                'category': sub_cat,
+                'price': 25,
+                'quantity': 123,
+                'product_image': str(Path('shop/images/snooker_triangle.jpg')),
+            },
+        )
+        if created:
+            print(f"Produkt '{product_name}' został utworzony.")
+        else:
+            print(f"Produkt '{product_name}' już istnieje.")
+    except Exception as e:
+        print(f"Nie można utworzyć produktu '{product_name}': {e}")
+
+def create_billiard_triangle():
+    main_cat, _ = MainCategory.objects.get_or_create(name='Trójkąty')
+    sub_cat, _ = SubCategory.objects.get_or_create(name='Pool', mainCategory=main_cat)
+
+    product_name = 'Trójkąt pool'
+    product_description = 'Trójkąt bilardowy, zapewniający precyzję i trwałość.'
+
+    try:
+        product, created = Product.objects.get_or_create(
+            name=product_name,
+            defaults={
+                'description': product_description,
+                'category': sub_cat,
+                'price': 25,
+                'quantity': 123,
+                'product_image': str(Path('shop/images/billiard_triangle.jpg')),
+            },
+        )
+        if created:
+            print(f"Produkt '{product_name}' został utworzony.")
+        else:
+            print(f"Produkt '{product_name}' już istnieje.")
+    except Exception as e:
+        print(f"Nie można utworzyć produktu '{product_name}': {e}")
+
+def create_billiard_table():
+    main_cat, _ = MainCategory.objects.get_or_create(name='Stoły bilardowe')
+    sub_cat, _ = SubCategory.objects.get_or_create(name='Stoły bilardowe pool', mainCategory=main_cat)
+
+    product_name = 'Stół Pool'
+    product_description = 'Stół bilardowy, zapewniający precyzję i trwałość.'
+
+    try:
+        product, created = Product.objects.get_or_create(
+            name=product_name,
+            defaults={
+                'description': product_description,
+                'category': sub_cat,
+                'price': 2500,
+                'quantity': 123,
+                'product_image': str(Path('shop/images/pool_table.jpg')),
+            },
+        )
+        if created:
+            print(f"Produkt '{product_name}' został utworzony.")
+        else:
+            print(f"Produkt '{product_name}' już istnieje.")
+    except Exception as e:
+        print(f"Nie można utworzyć produktu '{product_name}': {e}")
+
+def create_snooker_table():
+    main_cat, _ = MainCategory.objects.get_or_create(name='Stoły bilardowe')
+    sub_cat, _ = SubCategory.objects.get_or_create(name='Stoły do snookera', mainCategory=main_cat)
+
+    product_name = 'Stół snooker'
+    product_description = 'Stół snookerowy, zapewniający precyzję i trwałość.'
+
+    try:
+        product, created = Product.objects.get_or_create(
+            name=product_name,
+            defaults={
+                'description': product_description,
+                'category': sub_cat,
+                'price': 2500,
+                'quantity': 123,
+                'product_image': str(Path('shop/images/snooker_table.jpg')),
+            },
+        )
+        if created:
+            print(f"Produkt '{product_name}' został utworzony.")
+        else:
+            print(f"Produkt '{product_name}' już istnieje.")
+    except Exception as e:
+        print(f"Nie można utworzyć produktu '{product_name}': {e}")
+
 
 if __name__ == '__main__':
     create_users()
     create_categories()
     create_pool_balls()
     create_snooker_balls()
+    create_snooker_sticks()
+    create_biliard_sticks()
+    create_snooker_triangle()
+    create_billiard_triangle()
+    create_snooker_table()
+    create_billiard_table()
