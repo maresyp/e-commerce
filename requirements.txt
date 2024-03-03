@@ -3,3 +3,6 @@ python-dotenv
 Pillow
 whitenoise
 psycopg2-binary
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
