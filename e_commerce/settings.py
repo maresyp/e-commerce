@@ -35,17 +35,17 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    'Users.apps.UsersConfig',
-    'shop.apps.ShopConfig',
-    'cart.apps.CartConfig',
-    'order.apps.OrderConfig',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "Users.apps.UsersConfig",
+    "shop.apps.ShopConfig",
+    "cart.apps.CartConfig",
+    "order.apps.OrderConfig",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
