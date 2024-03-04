@@ -21,7 +21,7 @@ def get_shopping_cart(request):
 
     serializer = ShoppingCartSerializer(shopping_cart.cartentry_set.all(), many=True)
 
-    return Response(serializer.data)
+    return Response({"cart_id": shopping_cart.id, "entries": serializer.data})
 
 
 @api_view(["POST"])
