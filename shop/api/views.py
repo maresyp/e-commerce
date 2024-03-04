@@ -38,3 +38,9 @@ def get_all_categories(_request) -> Response:
         categories.setdefault(category.mainCategory.name, []).append(category.name)
 
     return Response(categories)
+
+@api_view(["GET"])
+def get_single_product(_request, product_id: UUID) -> Response:
+    product = get_object_or_404(Product, pk=product_id)
+    serializer = ProductSerializer(product)
+    return Response(serializer.data)
