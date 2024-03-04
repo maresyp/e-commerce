@@ -24,8 +24,7 @@ def get_shopping_cart(request):
     return Response({"cart_id": shopping_cart.id, "entries": serializer.data})
 
 
-@api_view(["POST"])
-def cart_add_product(request) -> Response:
+def deserialize_cart_data(request):
     serializer = CartOperationSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -37,17 +36,37 @@ def cart_add_product(request) -> Response:
     amount: int = serializer.validated_data["amount"]
     product = get_object_or_404(Product, pk=serializer.validated_data["product_id"])
 
+    return cart, product, amount
+
+
+@api_view(["POST"])
+def cart_add_product(request) -> Response:
+    cart, product, amount = deserialize_cart_data(request)
+
     # check if the product is already in the cart
     if CartEntry.objects.filter(product=product, cart=cart).exists():
         entry = CartEntry.objects.get(product=product, cart=cart)
+        if (entry.quantity + amount) > entry.product.quantity:
+            return Response({"amount": ["There are not enough items on the stock for given product"]}, status=status.HTTP_400_BAD_REQUEST)
         entry.quantity += amount
+        entry.save()
     else:
         entry = CartEntry.objects.create(product=product, quantity=amount, cart=cart)
 
-    entry.save()
-    return Response()
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
 def cart_remove_product(request):
-    pass
+    cart, product, amount = deserialize_cart_data(request)
+
+    # check if the product is already in the cart
+    if CartEntry.objects.filter(product=product, cart=cart).exists():
+        entry = CartEntry.objects.get(product=product, cart=cart)
+        if (entry.quantity - amount) <= 0:
+            entry.delete()
+        else:
+            entry.quantity -= amount
+            entry.save()
+
+    return Response(status=status.HTTP_200_OK)
