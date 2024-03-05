@@ -20,8 +20,19 @@ def get_shopping_cart(request):
         shopping_cart, _created = ShoppingCart.objects.get_or_create(expiration_date=timezone.now() + timedelta(days=14))
 
     serializer = ShoppingCartSerializer(shopping_cart.cartentry_set.all(), many=True)
+    amount_of_products: int = len(serializer.data)
+    total_price: float = 0.0
+    for product in serializer.data:
+        total_price += product.price * product.quantity
 
-    return Response({"cart_id": shopping_cart.id, "entries": serializer.data})
+    return Response(
+        {
+            "cart_id": shopping_cart.id,
+            "amount_of_products": amount_of_products,
+            "total_price": total_price,
+            "entries": serializer.data,
+        },
+    )
 
 
 def deserialize_cart_data(request):
