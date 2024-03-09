@@ -22,8 +22,9 @@ def get_shopping_cart(request):
     serializer = ShoppingCartSerializer(shopping_cart.cartentry_set.all(), many=True)
     amount_of_products: int = len(serializer.data)
     total_price: float = 0.0
+
     for product in serializer.data:
-        total_price += product.price * product.quantity
+        total_price += product["unit_price"] * product["quantity"]
 
     return Response(
         {
