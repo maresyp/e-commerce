@@ -69,7 +69,7 @@ def cart_add_product(request) -> Response:
 
 
 @api_view(["POST"])
-def cart_remove_product(request):
+def cart_subtract_product(request):
     cart, product, amount = deserialize_cart_data(request)
 
     # check if the product is already in the cart
