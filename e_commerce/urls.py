@@ -14,7 +14,6 @@ urlpatterns = [
     path("privacy-policy/", views.privacy_policy, name="privacy_policy"),
     path("cookie-policy/", views.cookie_policy, name="cookie_policy"),
     path("terms-conditions/", views.terms_conditions, name="terms_conditions"),
-    path("api/", include("Users.api.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
