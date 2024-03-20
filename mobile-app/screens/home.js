@@ -6,7 +6,7 @@ const HomeScreen = () => {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/get_all_products/')
+        axios.get('http://10.0.2.2:8000/api/get_all_products/')
             .then(response => {
                 setProducts(response.data);
             })
@@ -15,7 +15,7 @@ const HomeScreen = () => {
             });
     }, []);
 
-    const getImageUrl = (productId) => `http://127.0.0.1:8000/api/get_product_image/${productId}`;
+    const getImageUrl = (productId) => `http://10.0.2.2:8000/api/get_product_image/${productId}`;
 
     return (
         <ScrollView>
