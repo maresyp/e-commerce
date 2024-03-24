@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Navigator from './components/navigator';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 const Tab = createBottomTabNavigator();
 
@@ -10,6 +11,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <SafeAreaView style={{ flex: 1 }}>
+        
         <Image
           source={{ uri: 'http://10.0.2.2:8000/static/images/logo.png' }}
           style={styles.logo}
@@ -18,6 +20,7 @@ export default function App() {
         </View>
         <Navigator/>
       </SafeAreaView>
+      <Toast />
     </NavigationContainer>
   );
 }
