@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import BottomTabNavigator from './components/navigator';
+import Navigator from './components/navigator';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,7 +16,7 @@ export default function App() {
         />
         <View style={styles.header}>
         </View>
-        <BottomTabNavigator/>
+        <Navigator/>
       </SafeAreaView>
     </NavigationContainer>
   );

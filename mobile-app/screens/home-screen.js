@@ -4,7 +4,9 @@ import axios from 'axios';
 
 const HomeScreen = () => {
     const [products, setProducts] = useState([]);
+    const [cart, setCart] = useState([]);
 
+    // Pobieranie produktów
     useEffect(() => {
         axios.get('http://10.0.2.2:8000/api/get_all_products/')
             .then(response => {
@@ -14,6 +16,43 @@ const HomeScreen = () => {
                 console.error(error);
             });
     }, []);
+
+    // Pobieranie danych koszyka
+    useEffect(() => {
+        axios.get('http://10.0.2.2:8000/api/cart_get/')
+            .then(response => {
+                setCart(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
+
+    const addToCart = (productId) => {
+        if (!cart) {
+            console.error("Dane koszyka nie są jeszcze dostępne");
+            return;
+        }
+
+        const data = {
+            amount: 1,
+            product_id: productId,
+            cart_id: cart.cart_id,
+        };
+
+        axios.post('http://10.0.2.2:8000/api/cart_add_product/', data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log("Dodano produkt do koszyka: ", productId);
+        })
+        .catch(error => {
+            console.error("Wystąpił błąd przy dodawaniu do koszyka: ", error);
+        });
+    };
+      
 
     const getImageUrl = (productId) => `http://10.0.2.2:8000/api/get_product_image/${productId}`;
 
@@ -25,7 +64,7 @@ const HomeScreen = () => {
             />
             <Text style={styles.productName}>{item.name}</Text>
             <Text style={styles.productPrice}>Cena: {item.price} zł</Text>
-            <TouchableOpacity style={styles.addButton}>
+            <TouchableOpacity style={styles.addButton} onPress={() => addToCart(item.id)}>
                 <Text style={styles.buttonText}>Do koszyka</Text>
             </TouchableOpacity>
         </View>
