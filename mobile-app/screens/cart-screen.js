@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 import axios from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCart } from '../context/CartContext';
 
 const CartScreen = () => {
-    const [products, setProducts] = useState([]);
-
-    useEffect(() => {
-        axios.get('http://10.0.2.2:8000/api/get_all_products/')
-            .then(response => {
-                setProducts(response.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }, []);
-
-    const getImageUrl = (productId) => `http://10.0.2.2:8000/api/get_product_image/${productId}`;
+    const { cart } = useCart();
 
     return (
         <ScrollView>
-            <Text>Tutaj będzie koszyk</Text>
+            <Text>{cart.cart_id}</Text>
+            <Text>{cart.amount_of_products}</Text>
+            <Text>{cart.total_price}</Text>
         </ScrollView>
     );
 };

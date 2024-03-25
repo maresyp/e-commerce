@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, FlatList, Button, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
+import { useCart } from '../context/CartContext';
 
 const HomeScreen = () => {
     const [products, setProducts] = useState([]);
-    const [cart, setCart] = useState([]);
+    const { cart, setCart } = useCart();
 
     // Pobieranie produktów
     useEffect(() => {
@@ -61,6 +62,15 @@ const HomeScreen = () => {
         })
         .catch(error => {
             console.error("Wystąpił błąd przy dodawaniu do koszyka: ", error);
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Wystąpił błąd przy dodawaniu do koszyka.',
+                visibilityTime: 4000,
+                autoHide: true,
+                topOffset: 120,
+                bottomOffset: 40,
+              });
         });
     };
       

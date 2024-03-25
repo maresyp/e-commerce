@@ -4,23 +4,25 @@ import Navigator from './components/navigator';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import { CartProvider } from './context/CartContext';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <SafeAreaView style={{ flex: 1 }}>
-        
-        <Image
-          source={{ uri: 'http://10.0.2.2:8000/static/images/logo.png' }}
-          style={styles.logo}
-        />
-        <View style={styles.header}>
-        </View>
-        <Navigator/>
-      </SafeAreaView>
-      <Toast />
+      <CartProvider>
+        <SafeAreaView style={{ flex: 1 }}>
+          <Image
+            source={{ uri: 'http://10.0.2.2:8000/static/images/logo.png' }}
+            style={styles.logo}
+          />
+          <View style={styles.header}>
+          </View>
+          <Navigator/>
+        </SafeAreaView>
+        <Toast />
+      </CartProvider>
     </NavigationContainer>
   );
 }
