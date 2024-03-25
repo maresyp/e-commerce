@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, FlatList, Button, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, FlatList, Button, TouchableOpacity, Platform } from 'react-native';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import { useCart } from '../context/CartContext';
@@ -7,10 +7,12 @@ import { useCart } from '../context/CartContext';
 const HomeScreen = () => {
     const [products, setProducts] = useState([]);
     const { cart, setCart } = useCart();
+    // Adres URL do odpytywania w zależności od systemu operacyjnego
+    const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
 
     // Pobieranie produktów
     useEffect(() => {
-        axios.get('http://10.0.2.2:8000/api/get_all_products/')
+        axios.get(`${apiUrl}get_all_products/`)
             .then(response => {
                 setProducts(response.data);
             })
@@ -21,7 +23,7 @@ const HomeScreen = () => {
 
     // Pobieranie danych koszyka
     useEffect(() => {
-        axios.get('http://10.0.2.2:8000/api/cart_get/')
+        axios.get(`${apiUrl}cart_get/`)
             .then(response => {
                 setCart(response.data);
             })
@@ -42,7 +44,7 @@ const HomeScreen = () => {
             cart_id: cart.cart_id,
         };
 
-        axios.post('http://10.0.2.2:8000/api/cart_add_product/', data, {
+        axios.post(`${apiUrl}cart_add_product/`, data, {
             headers: {
                 'Content-Type': 'application/json'
             }
