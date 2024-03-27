@@ -75,9 +75,9 @@ const HomeScreen = () => {
               });
         });
     };
-      
 
-    const getImageUrl = (productId) => `http://10.0.2.2:8000/api/get_product_image/${productId}`;
+
+    const getImageUrl = (productId) => `${apiUrl}get_product_image/${productId}`;
 
     const renderProduct = ({ item }) => (
         <View style={styles.product}>
@@ -104,7 +104,7 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    product: { 
+    product: {
         marginHorizontal: '2.5%',
         marginVertical: '1%',
         padding: 10,
