@@ -104,7 +104,6 @@ const HomeScreen = () => {
               });
         });
     };
-      
 
     const getImageUrl = (productId) => `${apiUrl}get_product_image/${productId}`;
 
@@ -133,7 +132,7 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    product: { 
+    product: {
         marginHorizontal: '2.5%',
         marginVertical: '1%',
         padding: 10,
