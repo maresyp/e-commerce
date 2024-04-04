@@ -3,11 +3,12 @@ import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Platform } f
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState(null);
-    // Adres URL do odpytywania w zależności od systemu operacyjnego
+    const navigation = useNavigation();
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
 
     // Pobieranie produktów
@@ -108,7 +109,7 @@ const HomeScreen = () => {
     const getImageUrl = (productId) => `${apiUrl}get_product_image/${productId}`;
 
     const renderProduct = ({ item }) => (
-        <View style={styles.product}>
+        <TouchableOpacity style={styles.product} onPress={() => navigation.navigate('Product', { productId: item.id })}>
             <Image
                 style={styles.productImage}
                 source={{ uri: getImageUrl(item.id) }}
@@ -118,7 +119,7 @@ const HomeScreen = () => {
             <TouchableOpacity style={styles.addButton} onPress={() => addToCart(item.id)}>
                 <Text style={styles.buttonText}>Do koszyka</Text>
             </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
     );
 
     return (

@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/home-screen';
 import CartScreen from '../screens/cart-screen';
+import ProductScreen from '../screens/product-screen';
 
 const HomeStack = createStackNavigator();
 const CartStack = createStackNavigator();
@@ -15,6 +16,7 @@ function HomeStackScreen() {
             }}
         >
             <HomeStack.Screen name="Home" component={HomeScreen} />
+            <HomeStack.Screen name="Product" component={ProductScreen} />
         </HomeStack.Navigator>
     );
 }
