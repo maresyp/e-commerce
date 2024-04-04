@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     product: { 
         flex: 1,
         marginHorizontal: '2.5%',
-        marginVertical: '1%',
+        marginTop: '1%',
         padding: 10,
         borderRadius: 10,
         backgroundColor: '#f9f9f9',

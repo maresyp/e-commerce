@@ -8,7 +8,56 @@ const RegisterScreen = () => {
 
     return (
         <ScrollView style={styles.mainContainer}>
-            <Text>Tutaj zaaraz będzie formularz</Text>
+            <Text style={styles.mainText}>Zarejestruj konto</Text>
+
+            <View style={styles.loginForm}>
+                <Text style={styles.fieldName}>Imię:</Text>
+                <TextInput
+                    style={styles.inputField}
+                    inputMode='text'
+                    keyboardType='default'
+                    placeholder="Podaj swoje imię"
+                />
+
+                <Text style={styles.fieldName}>Adres e-mail:</Text>
+                <TextInput
+                    style={styles.inputField}
+                    inputMode='email'
+                    keyboardType='email-address'
+                    placeholder="Podaj adres e-mail"
+                />
+
+                <Text style={styles.fieldName}>Nazwa użytkownika:</Text>
+                <TextInput
+                    style={styles.inputField}
+                    inputMode='text'
+                    keyboardType='default'
+                    placeholder="Podaj nazwę użytkownika"
+                />
+
+                <Text style={styles.fieldName}>Hasło:</Text>
+                <TextInput
+                    style={styles.inputField}
+                    placeholder="Wprowadź hasło"
+                    secureTextEntry
+                />
+
+                <Text style={styles.fieldName}>Potwierdzenie hasła:</Text>
+                <TextInput
+                    style={styles.inputField}
+                    placeholder="Potwierdź hasło"
+                    secureTextEntry
+                />
+
+                <TouchableOpacity style={styles.loginBtn} onPress={() => jakasFunkcja()}>
+                    <Text style={styles.buttonText}>Zarejestruj się!</Text>
+                </TouchableOpacity>
+
+                <Text style={styles.subText2}>Masz już konto?</Text>
+                <TouchableOpacity style={styles.signupBtn} onPress={() => navigation.navigate('Login')}>
+                    <Text style={styles.signupText}>Zaloguj się!</Text>
+                </TouchableOpacity>
+            </View>
         </ScrollView>
     );
 };
@@ -16,7 +65,7 @@ const RegisterScreen = () => {
 const styles = StyleSheet.create({
     mainContainer: {
         marginHorizontal: '2.5%',
-        marginVertical: '20%',
+        marginVertical: '15%',
         paddingVertical: 20,
         borderRadius: 10,
         backgroundColor: '#f9f9f9',
@@ -79,6 +128,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
     },
+    signupBtn: {
+        alignSelf: 'flex-end',
+    },
+    signupText: {
+        color: '#0051ff',
+        fontSize: 15,
+    }
 });
 
 export default RegisterScreen;
