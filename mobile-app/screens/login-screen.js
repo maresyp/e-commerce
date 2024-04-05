@@ -1,10 +1,24 @@
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import AuthContext from '../context/AuthContext';
+import { useState, useContext } from 'react';
 
 const LoginScreen = () => {
     const navigation = useNavigation();
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
+
+    let { loginUser } = useContext(AuthContext)
+    const [email, setEmail] = useState("")
+    const [pwd, setPwd] = useState("")
+
+    const handleSubmit = async () => {
+        // TODO : add validation of user input
+        let result = await loginUser(email, pwd)
+        if (!result) {
+            // TODO : add alert or something
+        }
+    };
 
     return (
         <ScrollView style={styles.mainContainer}>
@@ -17,16 +31,18 @@ const LoginScreen = () => {
                     style={styles.inputField}
                     inputMode='email'
                     keyboardType='email-address'
+                    onChangeText={text => setEmail(text)}
                     placeholder="Wprowadź adres e-mail"
                 />
                 <Text style={styles.fieldName}>Hasło:</Text>
                 <TextInput
                     style={styles.inputField}
                     placeholder="Wprowadź hasło"
+                    onChangeText={text => setPwd(text)}
                     secureTextEntry
                 />
 
-                <TouchableOpacity style={styles.loginBtn} onPress={() => jakasFunkcja()}>
+                <TouchableOpacity style={styles.loginBtn} onPress={() => handleSubmit()}>
                     <Text style={styles.buttonText}>Zaloguj się!</Text>
                 </TouchableOpacity>
 
