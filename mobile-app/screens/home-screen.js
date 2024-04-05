@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Platform, TextInput } from 'react-native';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 const HomeScreen = () => {
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState(null);
+    const [searchText, setSearchText] = useState('');
     const navigation = useNavigation();
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
 
@@ -108,6 +109,10 @@ const HomeScreen = () => {
 
     const getImageUrl = (productId) => `${apiUrl}get_product_image/${productId}`;
 
+    const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+
     const renderProduct = ({ item }) => (
         <TouchableOpacity style={styles.product} onPress={() => navigation.navigate('Product', { productId: item.id })}>
             <Image
@@ -123,12 +128,23 @@ const HomeScreen = () => {
     );
 
     return (
-        <FlatList
-            data={products}
+        <>
+            <FlatList
+            data={filteredProducts}
             renderItem={renderProduct}
             keyExtractor={(item, index) => String(index)}
             numColumns={2}
-        />
+            />
+            <TextInput
+                style={styles.searchField}
+                inputMode='text'
+                keyboardType='default'
+                placeholder="&#128269; Szukaj..."
+                value={searchText}
+                onChangeText={text => setSearchText(text)}
+            />
+        </>
+        
     );
 };
 
@@ -177,6 +193,21 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontSize: 20,
+    },
+    searchField: {
+        paddingLeft: 20,
+        backgroundColor: '#d3eaf2',
+        borderColor: '#e5e7eb',
+        borderWidth: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        opacity: 80,
+        height: 40,
+        paddingHorizontal: 10,
+        alignSelf:'flex-end',
+        width: '100%',
     }
 });
 
