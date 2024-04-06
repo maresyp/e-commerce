@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 const HomeScreen = () => {
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState(null);
+    const [isTextInputVisible, setIsTextInputVisible] = useState(false);
     const [searchText, setSearchText] = useState('');
     const navigation = useNavigation();
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
@@ -127,24 +128,38 @@ const HomeScreen = () => {
         </TouchableOpacity>
     );
 
+    const toggleTextInputVisibility = () => {
+        setIsTextInputVisible(!isTextInputVisible);
+        if (isTextInputVisible) {
+            setSearchText('');
+        }
+    };
+
     return (
         <>
             <FlatList
-            data={filteredProducts}
-            renderItem={renderProduct}
-            keyExtractor={(item, index) => String(index)}
-            numColumns={2}
+                data={filteredProducts}
+                renderItem={renderProduct}
+                keyExtractor={(_item, index) => String(index)}
+                numColumns={2}
             />
-            <TextInput
-                style={styles.searchField}
-                inputMode='text'
-                keyboardType='default'
-                placeholder="&#128269; Szukaj..."
-                value={searchText}
-                onChangeText={text => setSearchText(text)}
-            />
-        </>
-        
+            <View style={styles.searchBar}>
+                <TouchableOpacity style={styles.searchIcon} onPress={toggleTextInputVisibility}>
+                    <Text style={styles.icon}>&#128269;</Text>
+                </TouchableOpacity>
+                {isTextInputVisible && (
+                    <TextInput
+                        style={styles.searchField}
+                        inputMode='text'
+                        keyboardType='default'
+                        placeholder=" Szukaj..."
+                        value={searchText}
+                        onChangeText={text => setSearchText(text)}
+                    />  
+                )}  
+            </View>
+            
+        </> 
     );
 };
 
@@ -195,19 +210,41 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     searchField: {
-        paddingLeft: 20,
+        alignSelf:'flex-end',
         backgroundColor: '#d3eaf2',
-        borderColor: '#e5e7eb',
-        borderWidth: 2,
+        borderRadius: 20,
+        fontSize: 20,
+        height: 50,
+        opacity: 80,
+        paddingLeft: 50,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.8,
         shadowRadius: 2,
-        opacity: 80,
-        height: 40,
-        paddingHorizontal: 10,
-        alignSelf:'flex-end',
         width: '100%',
+        
+        marginLeft: -40,
+    },
+    searchBar: {
+        position: 'absolute',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        height: 50,
+        bottom: 0,
+    },
+    searchIcon: {
+        borderWidth: 3,
+        borderRadius: 25,
+        borderColor: '#299ad7',
+        backgroundColor: '#f9f9f9',
+        justifyContent: 'center',
+        width: 50,
+        zIndex: 2,
+    },
+    icon: {
+        fontSize: 25,
+        borderRadius: 25,
+        textAlign: 'center',
     }
 });
 
