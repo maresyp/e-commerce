@@ -38,4 +38,6 @@ def create_order(request) -> Response:
     for product in cart.cartentry_set.all():
         OrderEntry.objects.create(order=new_order, product=product.product, quantity=product.quantity)
 
+    cart.cartentry_set.delete()
+
     return Response(status=status.HTTP_201_CREATED)
