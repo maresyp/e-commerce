@@ -5,6 +5,7 @@ import CartScreen from '../screens/cart-screen';
 import ProductScreen from '../screens/product-screen';
 import LoginScreen from '../screens/login-screen';
 import RegisterScreen from '../screens/register-screen';
+import OrderScreen from '../screens/order-screen';
 
 const HomeStack = createStackNavigator();
 const CartStack = createStackNavigator();
@@ -32,6 +33,7 @@ function CartStackScreen() {
             }}
         >
             <CartStack.Screen name="Cart" component={CartScreen} />
+            <CartStack.Screen name="Order" component={OrderScreen} />
         </CartStack.Navigator>
     );
 }

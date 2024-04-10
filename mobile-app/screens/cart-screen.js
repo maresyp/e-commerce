@@ -5,12 +5,14 @@ import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
+import { useNavigation } from '@react-navigation/native';
 
 const CartScreen = () => {
     const [cart, setCart] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
-    
+    const navigation = useNavigation();
+
     const getImageUrl = (productId) => `${apiUrl}get_product_image/${productId}`;
 
     useEffect(() => {
@@ -153,7 +155,7 @@ const CartScreen = () => {
                 numColumns={1} />
             <View style={styles.summarize}>
                 <Text style={styles.productName}>Wartość całkowita: {cart.total_price} zł</Text>
-                <TouchableOpacity style={styles.orderButton}>
+                <TouchableOpacity style={styles.orderButton} onPress={ () => navigation.navigate('Order')}>
                     <Text style={styles.buttonText}>Złóż zamówienie</Text>
                 </TouchableOpacity>
             </View>
@@ -184,6 +186,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 2,
         elevation: 5,
+        marginBottom: '1%',
     },
     infoFirst: {
         flexDirection: 'row',

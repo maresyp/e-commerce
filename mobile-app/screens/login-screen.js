@@ -26,7 +26,7 @@ const LoginScreen = () => {
             <Text style={styles.subText}>Witaj z powrotem bilardzisto!</Text>
 
             <View style={styles.loginForm}>
-                <Text style={styles.fieldName}>Nazwa użytkownika:</Text>
+                <Text>Nazwa użytkownika:</Text>
                 <TextInput
                     style={styles.inputField}
                     inputMode='email'
@@ -34,7 +34,7 @@ const LoginScreen = () => {
                     onChangeText={text => setEmail(text)}
                     placeholder="Wprowadź adres e-mail"
                 />
-                <Text style={styles.fieldName}>Hasło:</Text>
+                <Text>Hasło:</Text>
                 <TextInput
                     style={styles.inputField}
                     placeholder="Wprowadź hasło"
