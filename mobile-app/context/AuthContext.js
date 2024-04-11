@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from "react-native";
 import { decode as atob, encode as btoa } from 'base-64'
+import Toast from 'react-native-toast-message';
 
 if (!global.btoa) {
     global.btoa = btoa;
@@ -86,7 +87,16 @@ export const AuthProvider = ({ children }) => {
             setAuthTokens(data)
             setUser(jwtDecode(data.access))
             await AsyncStorage.setItem('authTokens', JSON.stringify(data))
-            navigation.navigate('/')
+            navigation.navigate('HomeStack')
+            Toast.show({
+                type: 'success',
+                position: 'top',
+                text1: 'Poprawnie zalogowano.',
+                visibilityTime: 4000,
+                autoHide: true,
+                topOffset: 120,
+                bottomOffset: 40,
+            });
             return true
         } else {
             return false

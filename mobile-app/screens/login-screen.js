@@ -26,7 +26,7 @@ const LoginScreen = () => {
             <Text style={styles.subText}>Witaj z powrotem bilardzisto!</Text>
 
             <View style={styles.loginForm}>
-                <Text>Nazwa użytkownika:</Text>
+                <Text>Email:</Text>
                 <TextInput
                     style={styles.inputField}
                     inputMode='email'

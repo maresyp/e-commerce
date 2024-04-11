@@ -1,10 +1,75 @@
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { useState } from 'react';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const RegisterScreen = () => {
     const navigation = useNavigation();
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
+
+    const [formData, setFormData] = useState({
+        first_name: '',
+        username: '',
+        email: '',
+        password: '',
+        pwd2: '',
+    })
+
+    const handleInputChange = (name, value) => {
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const handleRegistration = async () => {
+        if (formData['password'] != formData['pwd2']) {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Powtórzone hasło nie jest takie samo.',
+                visibilityTime: 4000,
+                autoHide: true,
+                topOffset: 120,
+                bottomOffset: 40,
+            });
+
+            return
+        }
+
+        axios.post(`${apiUrl}register/`, formData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            console.log("Zarejestrowano: ", response);
+            if (response.status === 201) {
+                navigation.navigate('Login')
+                Toast.show({
+                    type: 'success',
+                    position: 'top',
+                    text1: 'Utworzono konto, zaloguj się',
+                    visibilityTime: 4000,
+                    autoHide: true,
+                    topOffset: 120,
+                    bottomOffset: 40,
+                });
+            }
+        }).catch(error => {
+            console.error("Wystąpił błąd podczas rejestracji: ", error);
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Wystąpił błąd podczas rejestracji.',
+                visibilityTime: 4000,
+                autoHide: true,
+                topOffset: 120,
+                bottomOffset: 40,
+            });
+        })
+    }
 
     return (
         <ScrollView style={styles.mainContainer}>
@@ -17,6 +82,7 @@ const RegisterScreen = () => {
                     inputMode='text'
                     keyboardType='default'
                     placeholder="Podaj swoje imię"
+                    onChangeText={(value) => handleInputChange('first_name', value)}
                 />
 
                 <Text style={styles.fieldName}>Adres e-mail:</Text>
@@ -25,6 +91,7 @@ const RegisterScreen = () => {
                     inputMode='email'
                     keyboardType='email-address'
                     placeholder="Podaj adres e-mail"
+                    onChangeText={(value) => handleInputChange('email', value)}
                 />
 
                 <Text style={styles.fieldName}>Nazwa użytkownika:</Text>
@@ -33,6 +100,7 @@ const RegisterScreen = () => {
                     inputMode='text'
                     keyboardType='default'
                     placeholder="Podaj nazwę użytkownika"
+                    onChangeText={(value) => handleInputChange('username', value)}
                 />
 
                 <Text style={styles.fieldName}>Hasło:</Text>
@@ -40,6 +108,7 @@ const RegisterScreen = () => {
                     style={styles.inputField}
                     placeholder="Wprowadź hasło"
                     secureTextEntry
+                    onChangeText={(value) => handleInputChange('password', value)}
                 />
 
                 <Text style={styles.fieldName}>Potwierdzenie hasła:</Text>
@@ -47,9 +116,10 @@ const RegisterScreen = () => {
                     style={styles.inputField}
                     placeholder="Potwierdź hasło"
                     secureTextEntry
+                    onChangeText={(value) => handleInputChange('pwd2', value)}
                 />
 
-                <TouchableOpacity style={styles.loginBtn} onPress={() => jakasFunkcja()}>
+                <TouchableOpacity style={styles.loginBtn} onPress={() => handleRegistration()}>
                     <Text style={styles.buttonText}>Zarejestruj się!</Text>
                 </TouchableOpacity>
 

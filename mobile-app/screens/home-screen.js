@@ -53,7 +53,7 @@ const HomeScreen = () => {
             .catch(error => {
                 console.error(error);
             });
-        
+
         // Pobieranie produktów
         axios.get(`${apiUrl}get_all_products/`)
             .then(response => {
@@ -155,11 +155,11 @@ const HomeScreen = () => {
                         placeholder=" Szukaj..."
                         value={searchText}
                         onChangeText={text => setSearchText(text)}
-                    />  
-                )}  
+                    />
+                )}
             </View>
-            
-        </> 
+
+        </>
     );
 };
 
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 2,
         width: '100%',
-        
+
         marginLeft: -40,
     },
     searchBar: {
