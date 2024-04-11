@@ -38,7 +38,7 @@ const CartScreen = () => {
             if (cart) {
                 fetchCart(cart.cart_id);
             }
-        }, [cart])
+        }, [])
     );
 
     const fetchCart = async (cartId) => {
