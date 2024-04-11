@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native';
@@ -6,10 +6,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
+import AuthContext from '../context/AuthContext';
 
 const CartScreen = () => {
     const [cart, setCart] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const { user } = useContext(AuthContext)
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
     const navigation = useNavigation();
 
@@ -43,7 +45,8 @@ const CartScreen = () => {
 
     const fetchCart = async (cartId) => {
         try {
-            const response = await axios.get(`${apiUrl}cart_get/${cartId}`);
+            var url = user ? `${apiUrl}cart_get/` : `${apiUrl}cart_get/${cartId}}`
+            const response = await axios.get(url);
             setCart(response.data);
             setIsLoading(false);
         } catch (error) {
@@ -69,13 +72,13 @@ const CartScreen = () => {
     }
 
     const changeQuantity = (productId, quantity) => {
-        data = {
+        var data = {
             amount: quantity,
             product_id: productId,
             cart_id: cart.cart_id,
         };
 
-        tempApiUrl = null;
+        var tempApiUrl = null;
 
         if (quantity > 0) {
             tempApiUrl = `${apiUrl}cart_add_product/`;
@@ -134,13 +137,13 @@ const CartScreen = () => {
                 <Text style={styles.productQuantity}>{item.quantity}</Text>
                 <TouchableOpacity style={styles.quantityButton} onPress={() => changeQuantity(item.product, 1)}>
                     <Text style={styles.buttonText}>&#10133;</Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>
             </View>
 
             <View style={styles.infoThird}>
                 <TouchableOpacity style={styles.removeButton} onPress={() => changeQuantity(item.product, item.quantity * -1)}>
                     <Text style={styles.buttonText}>&#128465;</Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>
                 <Text style={styles.productPrice}>Łącznie: {item.unit_price * item.quantity} zł</Text>
             </View>
         </View>
@@ -174,7 +177,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    product: { 
+    product: {
         flex: 1,
         marginHorizontal: '2.5%',
         marginTop: '1%',
