@@ -4,6 +4,7 @@ import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegisterScreen = () => {
     const navigation = useNavigation();
@@ -15,6 +16,7 @@ const RegisterScreen = () => {
         email: '',
         password: '',
         pwd2: '',
+        cart_id: null
     })
 
     const handleInputChange = (name, value) => {
@@ -38,6 +40,8 @@ const RegisterScreen = () => {
 
             return
         }
+
+        formData['cart_id'] = await AsyncStorage.getItem('cart_id')
 
         axios.post(`${apiUrl}register/`, formData, {
             headers: {
