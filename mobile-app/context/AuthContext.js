@@ -43,6 +43,11 @@ export const AuthProvider = ({ children }) => {
     }, [])
 
     let updateToken = async () => {
+        if (!authTokens) {
+            console.log("No auth tokens present")
+            setLoading(false)
+            return
+        }
         console.log("Trying to update token");
         await fetch(
             `${apiUrl}token/refresh/`, {
@@ -124,15 +129,13 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
 
-        if (loading && authTokens) {
+        if (loading) {
             updateToken()
         }
 
         let fourMinutes = 1000 * 60 * 4
         let interval = setInterval(() => {
-            if (authTokens) {
-                updateToken()
-            }
+            updateToken()
         }, fourMinutes)
         return () => clearInterval(interval)
 
