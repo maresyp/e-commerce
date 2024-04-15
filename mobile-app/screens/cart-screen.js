@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,65 +11,44 @@ import AuthContext from '../context/AuthContext';
 const CartScreen = () => {
     const [cart, setCart] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const { user } = useContext(AuthContext)
+    const { user, authTokens } = useContext(AuthContext);
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
     const navigation = useNavigation();
 
     const getImageUrl = (productId) => `${apiUrl}get_product_image/${productId}`;
 
-    useEffect(() => {
-        const fetchCartId = async () => {
-            try {
-                const storedCartId = await AsyncStorage.getItem('cart_id');
-                if (storedCartId) {
-                    fetchCart(storedCartId);
-                } else {
-                    setIsLoading(false);
-                }
-            } catch (error) {
-                console.error('Error retrieving cart ID from AsyncStorage:', error);
-                setIsLoading(false);
-            }
-        };
-
-        fetchCartId();
-    }, []); // useEffect will run only once on component mount
-
     useFocusEffect(
         useCallback(() => {
-            if (cart) {
-                fetchCart(cart.cart_id);
-            }
+            fetchCart();
         }, [])
     );
 
-    const fetchCart = async (cartId) => {
+    const fetchCart = async () => {
         try {
-            var url = user ? `${apiUrl}cart_get/` : `${apiUrl}cart_get/${cartId}}`
-            const response = await axios.get(url);
+            setIsLoading(true);
+            let headers = {
+                'Content-Type': 'application/json',
+            };
+
+            let url = ``;
+
+            if (user) {
+                headers['Authorization'] = `Bearer ${authTokens.access}`;
+                url = `${apiUrl}cart_get/`;
+            }
+            else {
+                const storedCartId = await AsyncStorage.getItem('cart_id');
+                url = `${apiUrl}cart_get/${storedCartId}`;
+            }
+            
+            const response = await axios.get(url, {headers});
             setCart(response.data);
             setIsLoading(false);
         } catch (error) {
-            console.error(error);
+            console.error('Wystąpił błąd podczas próby pobrania koszyka:', error);
             setIsLoading(false);
         }
     };
-
-    if (isLoading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <Text>Loading...</Text>
-            </View>
-        );
-    }
-
-    if (!cart) {
-        return (
-            <View style={styles.emptyContainer}>
-                <Text>No items in cart</Text>
-            </View>
-        );
-    }
 
     const changeQuantity = (productId, quantity) => {
         var data = {
@@ -149,21 +128,33 @@ const CartScreen = () => {
         </View>
     );
 
-    return (
-        <>
-            <FlatList
-                data={cart.entries}
-                renderItem={renderProduct}
-                keyExtractor={(item, index) => String(index)}
-                numColumns={1} />
-            <View style={styles.summarize}>
-                <Text style={styles.productName}>Wartość całkowita: {cart.total_price} zł</Text>
-                <TouchableOpacity style={styles.orderButton} onPress={ () => navigation.navigate('Order')}>
-                    <Text style={styles.buttonText}>Złóż zamówienie</Text>
-                </TouchableOpacity>
+
+    if (isLoading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <Text>Ładowanie zawartości koszyka...</Text>
             </View>
-        </>
-    );
+        );
+    }
+    else {
+        return (
+            <>
+                <FlatList
+                    data={cart.entries}
+                    renderItem={renderProduct}
+                    keyExtractor={(_item, index) => String(index)}
+                    numColumns={1} />
+                <View style={styles.summarize}>
+                    <Text style={styles.productName}>Wartość całkowita: {cart.total_price} zł</Text>
+                    {cart.total_price > 0 && (
+                        <TouchableOpacity style={styles.orderButton} onPress={() => navigation.navigate('Order')}>
+                            <Text style={styles.buttonText}>Złóż zamówienie</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </>
+        );
+    }
 };
 
 const styles = StyleSheet.create({

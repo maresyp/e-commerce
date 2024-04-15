@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
@@ -6,10 +6,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
+import AuthContext from '../context/AuthContext';
 
 const OrderScreen = () => {
     const [cart, setCart] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const { user, authTokens } = useContext(AuthContext);
     const [formData, setFormData] = useState({
         city: '',
         street: '',
@@ -23,39 +25,35 @@ const OrderScreen = () => {
     
     const getImageUrl = (productId) => `${apiUrl}get_product_image/${productId}`;
 
-    useEffect(() => {
-        const fetchCartId = async () => {
-            try {
-                const storedCartId = await AsyncStorage.getItem('cart_id');
-                if (storedCartId) {
-                    fetchCart(storedCartId);
-                } else {
-                    setIsLoading(false);
-                }
-            } catch (error) {
-                console.error('Error retrieving cart ID from AsyncStorage:', error);
-                setIsLoading(false);
-            }
-        };
-
-        fetchCartId();
-    }, []); // useEffect will run only once on component mount
-
     useFocusEffect(
         useCallback(() => {
-            if (cart) {
-                fetchCart(cart.cart_id);
-            }
+            fetchCart();
         }, [])
     );
 
-    const fetchCart = async (cartId) => {
+    const fetchCart = async () => {
         try {
-            const response = await axios.get(`${apiUrl}cart_get/${cartId}`);
+            setIsLoading(true);
+            let headers = {
+                'Content-Type': 'application/json',
+            };
+
+            let url = ``;
+
+            if (user) {
+                headers['Authorization'] = `Bearer ${authTokens.access}`;
+                url = `${apiUrl}cart_get/`;
+            }
+            else {
+                const storedCartId = await AsyncStorage.getItem('cart_id');
+                url = `${apiUrl}cart_get/${storedCartId}`;
+            }
+            
+            const response = await axios.get(url, {headers});
             setCart(response.data);
             setIsLoading(false);
         } catch (error) {
-            console.error(error);
+            console.error('Wystąpił błąd podczas próby pobrania koszyka:', error);
             setIsLoading(false);
         }
     };
@@ -141,16 +139,11 @@ const OrderScreen = () => {
     if (isLoading) {
         return (
             <View style={styles.loadingContainer}>
-                <Text>Loading...</Text>
+                <Text>Ładowanie zawartości koszyka...</Text>
             </View>
         );
-    } else if (!cart) {
-        return (
-            <View style={styles.emptyContainer}>
-                <Text>No items in cart</Text>
-            </View>
-        );
-    } else {
+    } 
+    else {
         return (
             <ScrollView>
                 <FlatList

@@ -1,73 +1,77 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useContext, useState } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Platform, TextInput } from 'react-native';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
+import AuthContext from '../context/AuthContext';
 
 const HomeScreen = () => {
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState(null);
     const [isTextInputVisible, setIsTextInputVisible] = useState(false);
     const [searchText, setSearchText] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const { user, authTokens } = useContext(AuthContext);
     const navigation = useNavigation();
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
 
-    // Pobieranie produktów
-    useEffect(() => {
-        axios.get(`${apiUrl}get_all_products/`)
+    useFocusEffect(
+        useCallback(() => {
+            axios.get(`${apiUrl}get_all_products/`)
             .then(response => {
                 setProducts(response.data);
             })
             .catch(error => {
                 console.error(error);
             });
-    }, []);
+            
+            setIsLoading(false);
+            fetchCart();
+        }, [])
+    );
 
-    // Pobieranie danych koszyka
-    useEffect(() => {
-        // Sprawdź, czy w AsyncStorage jest zapisany cart_id
-        AsyncStorage.getItem('cart_id')
-            .then((cartId) => {
-                if (cartId) {
-                    // Jeśli jest zapisany, pobierz dane koszyka za pomocą cart_id
-                    axios.get(`${apiUrl}cart_get/${cartId}`)
-                        .then(response => {
-                            setCart(response.data);
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                } else {
-                    // Jeśli nie ma zapisanego cart_id, pobierz dane koszyka normalnie
-                    axios.get(`${apiUrl}cart_get/`)
-                        .then(response => {
-                            setCart(response.data);
-                            AsyncStorage.setItem('cart_id', response.data.cart_id);
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
+    const fetchCart = async () => {
+        try {
+            let headers = {
+                'Content-Type': 'application/json',
+            };
 
-        // Pobieranie produktów
-        axios.get(`${apiUrl}get_all_products/`)
-            .then(response => {
-                setProducts(response.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }, []);
+            let url = ``;
+
+            if (user) {
+                headers['Authorization'] = `Bearer ${authTokens.access}`;
+                url = `${apiUrl}cart_get/`;
+            }
+            else {
+                const storedCartId = await AsyncStorage.getItem('cart_id');
+                url = `${apiUrl}cart_get/${storedCartId}`;
+            }
+            
+            const response = await axios.get(url, {headers});
+            setCart(response.data);
+
+            if ( !user && !storedCartId) {
+                AsyncStorage.setItem('cart_id', response.data.cart_id);
+            }
+        } catch (error) {
+            console.error('Wystąpił błąd podczas próby pobrania koszyka:', error);
+        }
+    };
 
     const addToCart = (productId) => {
         if (!cart) {
             console.error("Dane koszyka nie są jeszcze dostępne");
             return;
+        }
+
+        let headers = {
+            'Content-Type': 'application/json',
+        };
+
+        if (user) {
+            headers['Authorization'] = `Bearer ${authTokens.access}`;
         }
 
         const data = {
@@ -76,11 +80,7 @@ const HomeScreen = () => {
             cart_id: cart.cart_id,
         };
 
-        axios.post(`${apiUrl}cart_add_product/`, data, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+        axios.post(`${apiUrl}cart_add_product/`, data, {headers})
         .then(() => {
             console.log("Dodano produkt ", productId, "do koszyka: ", cart.cart_id);
 
@@ -135,32 +135,41 @@ const HomeScreen = () => {
         }
     };
 
-    return (
-        <>
-            <FlatList
-                data={filteredProducts}
-                renderItem={renderProduct}
-                keyExtractor={(_item, index) => String(index)}
-                numColumns={2}
-            />
-            <View style={styles.searchBar}>
-                <TouchableOpacity style={styles.searchIcon} onPress={toggleTextInputVisibility}>
-                    <Text style={styles.icon}>&#128269;</Text>
-                </TouchableOpacity>
-                {isTextInputVisible && (
-                    <TextInput
-                        style={styles.searchField}
-                        inputMode='text'
-                        keyboardType='default'
-                        placeholder=" Szukaj..."
-                        value={searchText}
-                        onChangeText={text => setSearchText(text)}
-                    />
-                )}
-            </View>
 
-        </>
-    );
+    if (isLoading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <Text>Trwa ładowanie...</Text>
+            </View>
+        );
+    }
+    else {
+        return (
+            <>
+                <FlatList
+                    data={filteredProducts}
+                    renderItem={renderProduct}
+                    keyExtractor={(_item, index) => String(index)}
+                    numColumns={2}
+                />
+                <View style={styles.searchBar}>
+                    <TouchableOpacity style={styles.searchIcon} onPress={toggleTextInputVisibility}>
+                        <Text style={styles.icon}>&#128269;</Text>
+                    </TouchableOpacity>
+                    {isTextInputVisible && (
+                        <TextInput
+                            style={styles.searchField}
+                            inputMode='text'
+                            keyboardType='default'
+                            placeholder=" Szukaj..."
+                            value={searchText}
+                            onChangeText={text => setSearchText(text)}
+                        />
+                    )}
+                </View>
+            </>
+        );
+    }
 };
 
 const styles = StyleSheet.create({
