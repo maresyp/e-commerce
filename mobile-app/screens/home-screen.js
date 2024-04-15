@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Platform, TextInput } from 'react-native';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
@@ -39,13 +39,14 @@ const HomeScreen = () => {
             };
 
             let url = ``;
+            let storedCartId = null;
 
             if (user) {
                 headers['Authorization'] = `Bearer ${authTokens.access}`;
                 url = `${apiUrl}cart_get/`;
             }
             else {
-                const storedCartId = await AsyncStorage.getItem('cart_id');
+                storedCartId = await AsyncStorage.getItem('cart_id');
                 url = `${apiUrl}cart_get/${storedCartId}`;
             }
             

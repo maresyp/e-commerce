@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native';
@@ -25,7 +25,7 @@ const CartScreen = () => {
 
     const fetchCart = async () => {
         try {
-            setIsLoading(true);
+            
             let headers = {
                 'Content-Type': 'application/json',
             };
@@ -59,6 +59,15 @@ const CartScreen = () => {
 
         var tempApiUrl = null;
 
+        let headers = {
+            'Content-Type': 'application/json',
+        };
+
+        if (user) {
+            headers['Authorization'] = `Bearer ${authTokens.access}`;
+        }
+
+
         if (quantity > 0) {
             tempApiUrl = `${apiUrl}cart_add_product/`;
         }
@@ -67,11 +76,7 @@ const CartScreen = () => {
             data.amount *= -1;
         }
 
-        axios.post(tempApiUrl, data, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+        axios.post(tempApiUrl, data, {headers})
         .then(() => {
             console.log("Zmieniono stan produktu", productId, "w koszyku: ", cart.cart_id);
             Toast.show({
@@ -83,6 +88,7 @@ const CartScreen = () => {
                 topOffset: 120,
                 bottomOffset: 40,
               });
+              fetchCart();
         })
         .catch(error => {
             console.error("Wystąpił błąd przy dodawaniu do koszyka: ", error);

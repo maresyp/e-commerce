@@ -1,16 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
+import React, { useCallback, useContext, useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { useFocusEffect } from '@react-navigation/native';
+import AuthContext from '../context/AuthContext';
 
 const ProductScreen = ({ route }) => {
     const { productId } = route.params;
     const [product, setProduct] = useState(null);
-    const [cartId, setCartId] = useState(null);
+    const [cart, setCart] = useState(null);
     const [quantity, setQuantity] = useState(1);
+    const { user, authTokens } = useContext(AuthContext);
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
     
     const getImageUrl = (productId) => `${apiUrl}get_product_image/${productId}`;
@@ -26,42 +28,63 @@ const ProductScreen = ({ route }) => {
 
     useFocusEffect(
         useCallback(() => {
-            const fetchCartId = async () => {
-                try {
-                    const storedCartId = await AsyncStorage.getItem('cart_id');
-                    if (storedCartId !== null) {
-                        setCartId(storedCartId);
-                        fetchProductData(productId);
-                    }
-                } catch (error) {
-                    console.error('Błąd podczas odczytu cart_id z AsyncStorage:', error);
-                }
-            };
-
-
-            fetchCartId();
+            fetchProductData(productId);
+            fetchCart();
         }, [])
     );
 
+    const fetchCart = async () => {
+        try {
+            let headers = {
+                'Content-Type': 'application/json',
+            };
+
+            let url = ``;
+            let storedCartId = null;
+
+            if (user) {
+                headers['Authorization'] = `Bearer ${authTokens.access}`;
+                url = `${apiUrl}cart_get/`;
+            }
+            else {
+                storedCartId = await AsyncStorage.getItem('cart_id');
+                url = `${apiUrl}cart_get/${storedCartId}`;
+            }
+            
+            const response = await axios.get(url, {headers});
+            setCart(response.data);
+
+            if ( !user && !storedCartId) {
+                AsyncStorage.setItem('cart_id', response.data.cart_id);
+            }
+        } catch (error) {
+            console.error('Wystąpił błąd podczas próby pobrania koszyka:', error);
+        }
+    };
+
     const addToCart = (productId, amount) => {
-        if (!cartId) {
+        if (!cart) {
             console.error("Dane koszyka nie są jeszcze dostępne");
             return;
+        }
+
+        let headers = {
+            'Content-Type': 'application/json',
+        };
+
+        if (user) {
+            headers['Authorization'] = `Bearer ${authTokens.access}`;
         }
 
         const data = {
             amount: amount,
             product_id: productId,
-            cart_id: cartId,
+            cart_id: cart.cart_id,
         };
 
-        axios.post(`${apiUrl}cart_add_product/`, data, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+        axios.post(`${apiUrl}cart_add_product/`, data, {headers})
         .then(() => {
-            console.log("Dodano produkt ", productId, "do koszyka: ", cartId);
+            console.log("Dodano produkt ", productId, "do koszyka: ", cart.cart_id);
 
             Toast.show({
                 type: 'success',
