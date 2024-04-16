@@ -2,15 +2,17 @@ from __future__ import annotations
 
 from uuid import UUID
 
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from cart.models import ShoppingCart
 
-from .serializers import NewUserSerializer
+from .serializers import ChangePasswordSerializer, NewUserSerializer
 
 
 @api_view(["GET"])
@@ -49,3 +51,20 @@ def register_user(request) -> Response:
         cart.save()
 
     return Response(status=status.HTTP_201_CREATED)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    deserializer = ChangePasswordSerializer(data=request.data)
+    if not deserializer.is_valid():
+        return Response(deserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    user = request.user
+
+    if not check_password(deserializer.validated_data["old_password"], user.password):
+        return Response({"error": "Old password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user.password = make_password(deserializer.validated_data["user.password"])
+    user.save()
+
+    return Response(status=status.HTTP_200_OK)

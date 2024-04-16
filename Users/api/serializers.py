@@ -6,3 +6,8 @@ class NewUserSerializer(Serializer):
     password = CharField(max_length=64)
     first_name = CharField(max_length=32)
     cart_id = UUIDField(required=False)
+
+
+class ChangePasswordSerializer(Serializer):
+    old_password = CharField(required=True)
+    new_password = CharField(required=True)

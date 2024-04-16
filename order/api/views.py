@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from cart.models import ShoppingCart
@@ -41,3 +42,16 @@ def create_order(request) -> Response:
     cart.cartentry_set.all().delete()
 
     return Response(status=status.HTTP_201_CREATED)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def order_history(request) -> Response:
+    user_orders = Order.objects.filter(owner=request.user).order_by("-date_of_order")
+    order_entries = {order.id: OrderEntry.objects.filter(order=order) for order in user_orders}
+
+    data = {
+        "user_orders": user_orders,
+        "order_entries": order_entries,
+    }
+
+    return Response(data, status=status.HTTP_200_OK)
