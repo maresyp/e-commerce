@@ -11,8 +11,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from cart.models import ShoppingCart
+from Users.models import Profile
 
-from .serializers import ChangePasswordSerializer, NewUserSerializer
+from .serializers import ChangePasswordSerializer, NewUserSerializer, ProfileUpdateSerializer
 
 
 @api_view(["GET"])
@@ -68,3 +69,17 @@ def change_password(request):
     user.save()
 
     return Response(status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+
+    serializer = ProfileUpdateSerializer(instance=profile, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,4 +1,8 @@
-from rest_framework.serializers import CharField, EmailField, Serializer, UUIDField
+from typing import ClassVar
+
+from rest_framework.serializers import CharField, EmailField, ModelSerializer, Serializer, UUIDField
+
+from Users.models import Profile
 
 
 class NewUserSerializer(Serializer):
@@ -11,3 +15,9 @@ class NewUserSerializer(Serializer):
 class ChangePasswordSerializer(Serializer):
     old_password = CharField(required=True)
     new_password = CharField(required=True)
+
+
+class ProfileUpdateSerializer(ModelSerializer):
+    class Meta:
+        model = Profile
+        fields: ClassVar = ["gender", "city", "street", "house_number", "postal_code", "phone_number"]
