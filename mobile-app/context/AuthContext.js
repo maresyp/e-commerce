@@ -117,7 +117,7 @@ export const AuthProvider = ({ children }) => {
 
     let logoutUser = () => {
         clearUserData()
-        navigation.navigate('/')
+        navigation.navigate('Home')
     }
 
     let contextData = {

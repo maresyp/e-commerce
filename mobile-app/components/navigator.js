@@ -6,6 +6,9 @@ import ProductScreen from '../screens/product-screen';
 import LoginScreen from '../screens/login-screen';
 import RegisterScreen from '../screens/register-screen';
 import OrderScreen from '../screens/order-screen';
+import AuthContext from '../context/AuthContext';
+import AccountScreen from '../screens/account-screen';
+import { useContext } from 'react';
 
 const HomeStack = createStackNavigator();
 const CartStack = createStackNavigator();
@@ -39,14 +42,23 @@ function CartStackScreen() {
 }
 
 function AccountStackScreen() {
+    const { user, authTokens } = useContext(AuthContext);
+    
     return (
         <AccountStack.Navigator
             screenOptions={{
                 headerShown: false, // Ukrywa nagłówek dla wszystkich ekranów
             }}
-        >
-            <AccountStack.Screen name="Login" component={LoginScreen} />
-            <AccountStack.Screen name="Register" component={RegisterScreen} />
+        >   
+            {!user && (
+                <>
+                    <AccountStack.Screen name="Login" component={LoginScreen} />
+                    <AccountStack.Screen name="Register" component={RegisterScreen} />
+                </>
+            )}
+            {user && (
+                <AccountStack.Screen name="Account" component={AccountScreen} />
+            )}
         </AccountStack.Navigator>
     );
 }

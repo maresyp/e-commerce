@@ -25,7 +25,6 @@ const CartScreen = () => {
 
     const fetchCart = async () => {
         try {
-            
             let headers = {
                 'Content-Type': 'application/json',
             };
@@ -43,6 +42,7 @@ const CartScreen = () => {
             
             const response = await axios.get(url, {headers});
             setCart(response.data);
+            console.log(response.data);
             setIsLoading(false);
         } catch (error) {
             console.error('Wystąpił błąd podczas próby pobrania koszyka:', error);
@@ -66,7 +66,6 @@ const CartScreen = () => {
         if (user) {
             headers['Authorization'] = `Bearer ${authTokens.access}`;
         }
-
 
         if (quantity > 0) {
             tempApiUrl = `${apiUrl}cart_add_product/`;
