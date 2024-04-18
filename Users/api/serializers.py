@@ -17,7 +17,7 @@ class ChangePasswordSerializer(Serializer):
     new_password = CharField(required=True)
 
 
-class ProfileUpdateSerializer(ModelSerializer):
+class ProfileSerializer(ModelSerializer):
     class Meta:
         model = Profile
         fields: ClassVar = ["gender", "city", "street", "house_number", "postal_code", "phone_number"]
