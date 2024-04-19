@@ -20,6 +20,14 @@ const OrderScreen = () => {
         phone_number: '',
         shopping_cart_id:''
     });
+    const [adressFormData, setAdressFormData] = useState({
+        gender: '',
+        city: '',
+        street: '',
+        house_number: '',
+        postal_code: '',
+        phone_number: ''
+    });
     const navigation = useNavigation();
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
     
@@ -28,8 +36,32 @@ const OrderScreen = () => {
     useFocusEffect(
         useCallback(() => {
             fetchCart();
+            fetchUserData();
         }, [user, authTokens])
     );
+
+    const fetchUserData = async () => {
+        if ( user )
+        {
+            try {
+                setIsLoading(true);
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authTokens.access}`,
+                };
+                
+                console.log(user);
+                const response = await axios.get(`${apiUrl}profile/`, {headers});
+                setAdressFormData(response.data);
+                console.log(response.data);
+                setIsLoading(false);
+            } catch (error) {
+                console.error('Wystąpił błąd podczas próby pobrania danych użytkownika:', error);
+                setIsLoading(false);
+            }
+        } 
+        
+    };
 
     const fetchCart = async () => {
         try {
@@ -168,6 +200,7 @@ const OrderScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleInputChange('city', text)}
+                        value={adressFormData.city}
                     />
                     <Text>Ulica</Text>
                     <TextInput
@@ -175,6 +208,7 @@ const OrderScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleInputChange('street', text)}
+                        value={adressFormData.street}
                     />
                     <Text>Numer domu</Text>
                     <TextInput
@@ -182,6 +216,7 @@ const OrderScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleInputChange('house_number', text)}
+                        value={adressFormData.house_number}
                     />
                     <Text>Kod pocztowy</Text>
                     <TextInput
@@ -189,6 +224,7 @@ const OrderScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleInputChange('postal_code', text)}
+                        value={adressFormData.postal_code}
                     />
                     <Text>Numer telefonu</Text>
                     <TextInput
@@ -196,6 +232,7 @@ const OrderScreen = () => {
                         inputMode='tel'
                         keyboardType='phone-pad'
                         onChangeText={(text) => handleInputChange('phone_number', text)}
+                        value={adressFormData.phone_number}
                     />
                 </View>
                 <View style={styles.totalPriceContainer}>

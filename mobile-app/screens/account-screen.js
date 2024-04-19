@@ -310,6 +310,7 @@ const styles = StyleSheet.create({
     },
     totalPriceContainer: {
         marginHorizontal: '2.5%',
+        marginTop: '1.5%',
         marginBottom: '2.5%',
         padding: 10,
         borderRadius: 10,
@@ -322,7 +323,8 @@ const styles = StyleSheet.create({
     },
     adressContainer: {
         marginHorizontal: '2.5%',
-        marginBottom: '2.5%',
+        marginBottom: '1.5%',
+        marginTop: '1.5%',
         padding: 10,
         borderRadius: 10,
         backgroundColor: '#f9f9f9',
