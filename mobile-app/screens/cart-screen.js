@@ -20,7 +20,7 @@ const CartScreen = () => {
     useFocusEffect(
         useCallback(() => {
             fetchCart();
-        }, [])
+        }, [user, authTokens])
     );
 
     const fetchCart = async () => {
@@ -36,8 +36,13 @@ const CartScreen = () => {
                 url = `${apiUrl}cart_get/`;
             }
             else {
-                const storedCartId = await AsyncStorage.getItem('cart_id');
-                url = `${apiUrl}cart_get/${storedCartId}`;
+                storedCartId = await AsyncStorage.getItem('cart_id');
+                if (storedCartId){
+                    url = `${apiUrl}cart_get/${storedCartId}`;
+                }
+                else {
+                    url = `${apiUrl}cart_get/`;
+                }
             }
             
             const response = await axios.get(url, {headers});
@@ -56,6 +61,8 @@ const CartScreen = () => {
             product_id: productId,
             cart_id: cart.cart_id,
         };
+
+        console.log(data);
 
         var tempApiUrl = null;
 
@@ -90,7 +97,7 @@ const CartScreen = () => {
               fetchCart();
         })
         .catch(error => {
-            console.error("Wystąpił błąd przy dodawaniu do koszyka: ", error);
+            console.error("Wystąpił błąd: ", error);
             Toast.show({
                 type: 'error',
                 position: 'top',

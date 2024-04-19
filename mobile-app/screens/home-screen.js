@@ -26,10 +26,14 @@ const HomeScreen = () => {
             .catch(error => {
                 console.error(error);
             });
-            
             setIsLoading(false);
-            fetchCart();
         }, [])
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchCart();
+        }, [user, authTokens])
     );
 
     const fetchCart = async () => {
@@ -47,7 +51,12 @@ const HomeScreen = () => {
             }
             else {
                 storedCartId = await AsyncStorage.getItem('cart_id');
-                url = `${apiUrl}cart_get/${storedCartId}`;
+                if (storedCartId){
+                    url = `${apiUrl}cart_get/${storedCartId}`;
+                }
+                else {
+                    url = `${apiUrl}cart_get/`;
+                } 
             }
             
             const response = await axios.get(url, {headers});

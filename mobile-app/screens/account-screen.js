@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -11,27 +11,47 @@ import AuthContext from '../context/AuthContext';
 const AccountScreen = () => {
     const [isLoading, setIsLoading] = useState(true);
     const { user, authTokens } = useContext(AuthContext);
+    const navigation = useNavigation();
+    const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
+    let { logoutUser } = useContext(AuthContext);
     const [adressFormData, setAdressFormData] = useState({
+        gender: '',
         city: '',
         street: '',
         house_number: '',
         postal_code: '',
-        phone_number: '',
-        shopping_cart_id:''
+        phone_number: ''
     });
     const [pwdFormData, setPwdFormData] = useState({
         old_password: '',
         new_password: '',
         confirm_password: '',
     });
-    const navigation = useNavigation();
-    const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
-    let { logoutUser } = useContext(AuthContext);
 
     useFocusEffect(
         useCallback(() => {
+            fetchUserData();
         }, [])
     );
+
+    const fetchUserData = async () => {
+        try {
+            setIsLoading(true);
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authTokens.access}`,
+            };
+            
+            console.log(user);
+            const response = await axios.get(`${apiUrl}profile/`, {headers});
+            setAdressFormData(response.data);
+            console.log(response.data);
+            setIsLoading(false);
+        } catch (error) {
+            console.error('Wystąpił błąd podczas próby pobrania danych użytkownika:', error);
+            setIsLoading(false);
+        }
+    };
 
     const handleAdressInputChange = (key, value) => {
         setAdressFormData({
@@ -45,6 +65,34 @@ const AccountScreen = () => {
             ...pwdFormData,
             [key]: value
         });
+    };
+
+    const handleChangePwdSubmit = () => {
+
+    };
+
+    const handleChangeAdressSubmit = async () => {
+        try {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authTokens.access}`,
+            };
+            
+            console.log(adressFormData);
+            const response = await axios.post(`${apiUrl}update_profile/`, adressFormData,{headers});
+            console.log(response.data);
+            Toast.show({
+                type: 'success',
+                position: 'top',
+                text1: 'Pomyślnie zapisano dane!',
+                visibilityTime: 4000,
+                autoHide: true,
+                topOffset: 120,
+                bottomOffset: 40,
+              });
+        } catch (error) {
+            console.error('Wystąpił błąd podczas zapisywania danych:', error);
+        }
     };
 
     const handleLogoutSubmit = async () => {
@@ -75,7 +123,7 @@ const AccountScreen = () => {
         }
     };
 
-    if (false) {
+    if (isLoading) {
         return (
             <View style={styles.loadingContainer}>
                 <Text>Ładowanie zawartości koszyka...</Text>
@@ -94,6 +142,7 @@ const AccountScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleAdressInputChange('city', text)}
+                        value={adressFormData.city}
                     />
                     <Text>Ulica</Text>
                     <TextInput
@@ -101,6 +150,7 @@ const AccountScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleAdressInputChange('street', text)}
+                        value={adressFormData.street}
                     />
                     <Text>Numer domu</Text>
                     <TextInput
@@ -108,6 +158,7 @@ const AccountScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleAdressInputChange('house_number', text)}
+                        value={adressFormData.house_number}
                     />
                     <Text>Kod pocztowy</Text>
                     <TextInput
@@ -115,6 +166,7 @@ const AccountScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleAdressInputChange('postal_code', text)}
+                        value={adressFormData.postal_code}
                     />
                     <Text>Numer telefonu</Text>
                     <TextInput
@@ -122,8 +174,16 @@ const AccountScreen = () => {
                         inputMode='tel'
                         keyboardType='phone-pad'
                         onChangeText={(text) => handleAdressInputChange('phone_number', text)}
+                        value={adressFormData.phone_number}
                     />
-                    <TouchableOpacity style={styles.orderButton}>
+                    <Text>Płeć</Text>
+                    <Picker
+                        selectedValue={adressFormData.gender}
+                        onValueChange={(itemValue, itemIndex) => handleAdressInputChange('gender', itemValue)}>
+                        <Picker.Item label="Mężczyzna" value="M" />
+                        <Picker.Item label="Kobieta" value="K" />
+                    </Picker>
+                    <TouchableOpacity style={styles.orderButton} onPress={() => handleChangeAdressSubmit()}>
                         <Text style={styles.buttonText}>Zapisz zmiany</Text>
                     </TouchableOpacity>
                 </View>
@@ -134,7 +194,7 @@ const AccountScreen = () => {
                     <Text style={styles.fieldName}>Stare hasło:</Text>
                     <TextInput
                         style={styles.inputField}
-                        placeholder="Wprowadź hasło"
+                        placeholder="Wprowadź stare hasło"
                         secureTextEntry
                         onChangeText={(value) => handlePwdInputChange('old_password', value)}
                     />
@@ -142,7 +202,7 @@ const AccountScreen = () => {
                     <Text style={styles.fieldName}>Nowe hasło hasło:</Text>
                     <TextInput
                         style={styles.inputField}
-                        placeholder="Wprowadź hasło"
+                        placeholder="Wprowadź nowe hasło"
                         secureTextEntry
                         onChangeText={(value) => handlePwdInputChange('new_password', value)}
                     />
@@ -154,7 +214,7 @@ const AccountScreen = () => {
                         secureTextEntry
                         onChangeText={(value) => handlePwdInputChange('confirm_password', value)}
                     />
-                    <TouchableOpacity style={styles.orderButton} >
+                    <TouchableOpacity style={styles.orderButton} onPress={() => handleChangePwdSubmit()}>
                         <Text style={styles.buttonText}>Zapisz zmiany</Text>
                     </TouchableOpacity>
                 </View>

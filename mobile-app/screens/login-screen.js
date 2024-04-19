@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AuthContext from '../context/AuthContext';
 import { useState, useContext } from 'react';
+import Toast from 'react-native-toast-message';
 
 const LoginScreen = () => {
     const navigation = useNavigation();
@@ -16,7 +17,7 @@ const LoginScreen = () => {
         // TODO : add validation of user input
         let result = await loginUser(email, pwd)
         if (!result) {
-            // TODO : add alert or something
+
         }
     };
 

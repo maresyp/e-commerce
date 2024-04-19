@@ -29,8 +29,13 @@ const ProductScreen = ({ route }) => {
     useFocusEffect(
         useCallback(() => {
             fetchProductData(productId);
-            fetchCart();
         }, [])
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchCart();
+        }, [user, authTokens])
     );
 
     const fetchCart = async () => {
@@ -48,15 +53,16 @@ const ProductScreen = ({ route }) => {
             }
             else {
                 storedCartId = await AsyncStorage.getItem('cart_id');
-                url = `${apiUrl}cart_get/${storedCartId}`;
+                if (storedCartId){
+                    url = `${apiUrl}cart_get/${storedCartId}`;
+                }
+                else {
+                    url = `${apiUrl}cart_get/`;
+                }  
             }
             
             const response = await axios.get(url, {headers});
             setCart(response.data);
-
-            if ( !user && !storedCartId) {
-                AsyncStorage.setItem('cart_id', response.data.cart_id);
-            }
         } catch (error) {
             console.error('Wystąpił błąd podczas próby pobrania koszyka:', error);
         }

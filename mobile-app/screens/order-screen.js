@@ -28,7 +28,7 @@ const OrderScreen = () => {
     useFocusEffect(
         useCallback(() => {
             fetchCart();
-        }, [])
+        }, [user, authTokens])
     );
 
     const fetchCart = async () => {
@@ -45,8 +45,13 @@ const OrderScreen = () => {
                 url = `${apiUrl}cart_get/`;
             }
             else {
-                const storedCartId = await AsyncStorage.getItem('cart_id');
-                url = `${apiUrl}cart_get/${storedCartId}`;
+                storedCartId = await AsyncStorage.getItem('cart_id');
+                if (storedCartId){
+                    url = `${apiUrl}cart_get/${storedCartId}`;
+                }
+                else {
+                    url = `${apiUrl}cart_get/`;
+                }  
             }
             
             const response = await axios.get(url, {headers});
