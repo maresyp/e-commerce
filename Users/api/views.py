@@ -65,7 +65,7 @@ def change_password(request):
     if not check_password(deserializer.validated_data["old_password"], user.password):
         return Response({"error": "Stare hasło jest niepoprawne"}, status=status.HTTP_400_BAD_REQUEST)
 
-    user.password = make_password(deserializer.validated_data["user.password"])
+    user.password = make_password(deserializer.validated_data["new_password"])
     user.save()
 
     return Response(status=status.HTTP_200_OK)

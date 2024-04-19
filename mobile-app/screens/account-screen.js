@@ -67,8 +67,61 @@ const AccountScreen = () => {
         });
     };
 
-    const handleChangePwdSubmit = () => {
-
+    const handleChangePwdSubmit = async () => {
+        const { old_password, new_password, confirm_password } = pwdFormData;
+    
+        // Sprawdzenie czy wszystkie pola są uzupełnione
+        if (!old_password || !new_password || !confirm_password) {
+            console.error('Proszę wypełnić wszystkie pola.');
+            return;
+        }
+    
+        // Sprawdzenie czy stare hasło jest różne od nowego hasła
+        if (old_password === new_password) {
+            console.error('Nowe hasło musi się różnić od starego hasła.');
+            return;
+        }
+    
+        // Sprawdzenie czy nowe hasła są takie same
+        if (new_password !== confirm_password) {
+            console.error('Nowe hasło i potwierdzenie hasła nie są takie same.');
+            return;
+        }
+    
+        // Wysłanie zapytania do API w przypadku poprawnie wypełnionego formularza
+        try {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authTokens.access}`,
+            };
+    
+            const response = await axios.post(`${apiUrl}change_password/`, {
+                old_password,
+                new_password,
+            }, { headers });
+    
+            console.log(response.data);
+            Toast.show({
+                type: 'success',
+                position: 'top',
+                text1: 'Pomyślnie zmieniono hasło!',
+                visibilityTime: 4000,
+                autoHide: true,
+                topOffset: 120,
+                bottomOffset: 40,
+            });
+        } catch (error) {
+            console.error('Wystąpił błąd podczas zmiany hasła:', error);
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Wystąpił błąd podczas zmiany hasła.',
+                visibilityTime: 4000,
+                autoHide: true,
+                topOffset: 120,
+                bottomOffset: 40,
+            });
+        }
     };
 
     const handleChangeAdressSubmit = async () => {
