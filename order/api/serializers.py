@@ -10,3 +10,4 @@ class OrderSerializer(Serializer):
     phone_number = CharField(validators=[MaxLengthValidator(12)])
 
     shopping_cart_id = UUIDField(required=False)
+
