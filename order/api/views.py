@@ -43,7 +43,7 @@ def create_order(request) -> Response:
 
     return Response(status=status.HTTP_201_CREATED)
 
-@api_view(["POST"])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def order_history(request) -> Response:
     user_orders = Order.objects.filter(owner=request.user).order_by("-date_of_order")
