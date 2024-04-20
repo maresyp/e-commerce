@@ -10,7 +10,8 @@ import AuthContext from '../context/AuthContext';
 
 const OrderScreen = () => {
     const [cart, setCart] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [cartIsLoading, setCartIsLoading] = useState(true);
+    const [userIsLoading, setUserIsLoading] = useState(true);
     const { user, authTokens } = useContext(AuthContext);
     const [formData, setFormData] = useState({
         gender: '',
@@ -38,7 +39,7 @@ const OrderScreen = () => {
         if ( user )
         {
             try {
-                setIsLoading(true);
+                setUserIsLoading(true);
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authTokens.access}`,
@@ -46,10 +47,10 @@ const OrderScreen = () => {
                 
                 const response = await axios.get(`${apiUrl}profile/`, {headers});
                 setFormData(response.data);
-                setIsLoading(false);
+                setUserIsLoading(false);
             } catch (error) {
                 console.error('Wystąpił błąd podczas próby pobrania danych użytkownika:', error);
-                setIsLoading(false);
+                setUserIsLoading(false);
             }
         } 
         
@@ -57,7 +58,7 @@ const OrderScreen = () => {
 
     const fetchCart = async () => {
         try {
-            setIsLoading(true);
+            setCartIsLoading(true);
             let headers = {
                 'Content-Type': 'application/json',
             };
@@ -80,10 +81,10 @@ const OrderScreen = () => {
             
             const response = await axios.get(url, {headers});
             setCart(response.data);
-            setIsLoading(false);
+            setCartIsLoading(false);
         } catch (error) {
             console.error('Wystąpił błąd podczas próby pobrania koszyka:', error);
-            setIsLoading(false);
+            setCartIsLoading(false);
         }
     };
 
@@ -177,7 +178,7 @@ const OrderScreen = () => {
         );
     };
 
-    if (isLoading) {
+    if (cartIsLoading || userIsLoading) {
         return (
             <View style={styles.loadingContainer}>
                 <Text>Ładowanie zawartości koszyka...</Text>

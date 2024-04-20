@@ -12,7 +12,8 @@ const HomeScreen = () => {
     const [cart, setCart] = useState(null);
     const [isTextInputVisible, setIsTextInputVisible] = useState(false);
     const [searchText, setSearchText] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
+    const [cartIsLoading, setCartIsLoading] = useState(true);
+    const [productsAreLoading, setProductsAreLoading] = useState(true);
     const { user, authTokens } = useContext(AuthContext);
     const navigation = useNavigation();
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
@@ -21,6 +22,7 @@ const HomeScreen = () => {
     
     useFocusEffect(
         useCallback(() => {
+            setProductsAreLoading(true);
             axios.get(`${apiUrl}get_all_products/`)
             .then(response => {
                 setProducts(response.data);
@@ -28,7 +30,7 @@ const HomeScreen = () => {
             .catch(error => {
                 console.error(error);
             });
-            setIsLoading(false);
+            setProductsAreLoading(false);
         }, [])
     );
 
@@ -40,6 +42,7 @@ const HomeScreen = () => {
 
     const fetchCart = async () => {
         try {
+            setCartIsLoading(true)
             let headers = {
                 'Content-Type': 'application/json',
             };
@@ -67,8 +70,10 @@ const HomeScreen = () => {
             if ( !user && !storedCartId) {
                 AsyncStorage.setItem('cart_id', response.data.cart_id);
             }
+            setCartIsLoading(false);
         } catch (error) {
             console.error('Wystąpił błąd podczas próby pobrania koszyka:', error);
+            setCartIsLoading(false);
         }
     };
 
@@ -151,7 +156,7 @@ const HomeScreen = () => {
     };
 
 
-    if (isLoading) {
+    if (cartIsLoading || productsAreLoading) {
         return (
             <View style={styles.loadingContainer}>
                 <Text>Trwa ładowanie...</Text>
@@ -188,6 +193,11 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     product: {
         marginHorizontal: '2.5%',
         marginVertical: '1%',
