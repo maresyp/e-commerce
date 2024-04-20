@@ -67,7 +67,7 @@ function AccountStackScreen() {
 export default function Navigator() {
     return (
         <Tab.Navigator
-            screenOptions={({ route }) => ({
+            screenOptions={({ route, navigation }) => ({
                 headerShown: false, 
                 tabBarActiveTintColor: '#299ad7',
                 tabBarInactiveTintColor: 'gray',
@@ -83,7 +83,18 @@ export default function Navigator() {
                         iconName = focused ? 'person' : 'person-outline';
                     }
 
-                    return <Ionicons name={iconName} size={size} color={color} />;
+                    return (
+                        <Ionicons 
+                            name={iconName} 
+                            size={size} 
+                            color={color} 
+                            onPress={() => { navigation.reset({
+                                    index: 0,
+                                    routes: [{ name: route.name }],
+                                });
+                            }}
+                        />
+                    );
                 },
             })}
         >
