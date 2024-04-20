@@ -48,14 +48,13 @@ const HomeScreen = () => {
             };
 
             let url = ``;
-            let storedCartId = null;
+            const storedCartId = await AsyncStorage.getItem('cart_id');
 
             if (user) {
                 headers['Authorization'] = `Bearer ${authTokens.access}`;
                 url = `${apiUrl}cart_get/`;
             }
             else {
-                storedCartId = await AsyncStorage.getItem('cart_id');
                 if (storedCartId){
                     url = `${apiUrl}cart_get/${storedCartId}`;
                 }
