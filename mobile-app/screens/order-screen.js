@@ -13,6 +13,7 @@ const OrderScreen = () => {
     const [isLoading, setIsLoading] = useState(true);
     const { user, authTokens } = useContext(AuthContext);
     const [formData, setFormData] = useState({
+        gender: '',
         city: '',
         street: '',
         house_number: '',
@@ -20,14 +21,7 @@ const OrderScreen = () => {
         phone_number: '',
         shopping_cart_id:''
     });
-    const [adressFormData, setAdressFormData] = useState({
-        gender: '',
-        city: '',
-        street: '',
-        house_number: '',
-        postal_code: '',
-        phone_number: ''
-    });
+
     const navigation = useNavigation();
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
     
@@ -50,10 +44,8 @@ const OrderScreen = () => {
                     'Authorization': `Bearer ${authTokens.access}`,
                 };
                 
-                console.log(user);
                 const response = await axios.get(`${apiUrl}profile/`, {headers});
-                setAdressFormData(response.data);
-                console.log(response.data);
+                setFormData(response.data);
                 setIsLoading(false);
             } catch (error) {
                 console.error('Wystąpił błąd podczas próby pobrania danych użytkownika:', error);
@@ -113,7 +105,7 @@ const OrderScreen = () => {
                 type: 'error',
                 position: 'top',
                 text1: 'Błąd',
-                text2: 'Proszę wypełnić wszystkie pola',
+                text2: 'Proszę uzupełnić adres dostawy!',
                 visibilityTime: 4000,
                 autoHide: true,
                 topOffset: 120,
@@ -123,6 +115,14 @@ const OrderScreen = () => {
         }
 
         try {
+            let headers = {
+                'Content-Type': 'application/json',
+            };
+
+            if (user) {
+                headers['Authorization'] = `Bearer ${authTokens.access}`;
+            }
+
             console.log(formData);
             const response = await axios.post(`${apiUrl}create_order/`, {
                 city: formData.city,
@@ -131,7 +131,7 @@ const OrderScreen = () => {
                 postal_code: formData.postal_code,
                 phone_number: formData.phone_number,
                 shopping_cart_id: cart.cart_id,
-            });
+            }, {headers});
             
             Toast.show({
                 type:  'success',
@@ -150,28 +150,32 @@ const OrderScreen = () => {
         }
     };
 
-    const renderProduct = ({ item, index }) => (
-        <View>
-            <View style={styles.products}>
-                <View style={styles.infoFirst}>
-                    <Image
-                        style={styles.productImage}
-                        source={{ uri: getImageUrl(item.product) }}
-                    />
-                    <Text style={styles.productName}>{item.product_name}</Text>
+    const renderProduct = ({ item, index }) => {
+        const productName = item.product_name.length > 15 ? item.product_name.substring(0, 15) + '...' : item.product_name;
+        
+        return(
+            <View>
+                <View style={styles.products}>
+                    <View style={styles.infoFirst}>
+                        <Image
+                            style={styles.productImage}
+                            source={{ uri: getImageUrl(item.product) }}
+                        />
+                        <Text style={styles.productName}>{productName}</Text>
+                    </View>
+                    <View style={styles.infoSecond}>
+                        <Text style={styles.textQuantity}>Ilość:</Text>
+                        <Text style={styles.productQuantity}>{item.quantity}</Text>
+                    </View>
                 </View>
-                <View style={styles.infoSecond}>
-                    <Text style={styles.textQuantity}>Ilość:</Text>
-                    <Text style={styles.productQuantity}>{item.quantity}</Text>
+                <View style={styles.infoThird}>
+                    <Text>Łącznie: </Text>
+                    <Text>{item.unit_price * item.quantity} zł</Text>
                 </View>
+                {index < cart.entries.length - 1 && <View style={styles.line}></View>}
             </View>
-            <View style={styles.infoThird}>
-                <Text>Łącznie: </Text>
-                <Text>{item.unit_price * item.quantity} zł</Text>
-            </View>
-            {index < cart.entries.length - 1 && <View style={styles.line}></View>}
-        </View>
-    );
+        );
+    };
 
     if (isLoading) {
         return (
@@ -200,7 +204,7 @@ const OrderScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleInputChange('city', text)}
-                        value={adressFormData.city}
+                        value={formData.city}
                     />
                     <Text>Ulica</Text>
                     <TextInput
@@ -208,7 +212,7 @@ const OrderScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleInputChange('street', text)}
-                        value={adressFormData.street}
+                        value={formData.street}
                     />
                     <Text>Numer domu</Text>
                     <TextInput
@@ -216,7 +220,7 @@ const OrderScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleInputChange('house_number', text)}
-                        value={adressFormData.house_number}
+                        value={formData.house_number}
                     />
                     <Text>Kod pocztowy</Text>
                     <TextInput
@@ -224,7 +228,7 @@ const OrderScreen = () => {
                         inputMode='text'
                         keyboardType='default'
                         onChangeText={(text) => handleInputChange('postal_code', text)}
-                        value={adressFormData.postal_code}
+                        value={formData.postal_code}
                     />
                     <Text>Numer telefonu</Text>
                     <TextInput
@@ -232,7 +236,7 @@ const OrderScreen = () => {
                         inputMode='tel'
                         keyboardType='phone-pad'
                         onChangeText={(text) => handleInputChange('phone_number', text)}
-                        value={adressFormData.phone_number}
+                        value={formData.phone_number}
                     />
                 </View>
                 <View style={styles.totalPriceContainer}>
@@ -320,7 +324,7 @@ const styles = StyleSheet.create({
         marginTop: -15,
     },
     productName: {
-        fontSize: 25,
+        fontSize: 22,
         fontWeight: 'bold',
         marginLeft: 10,
     },

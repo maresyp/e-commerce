@@ -16,7 +16,9 @@ const HomeScreen = () => {
     const { user, authTokens } = useContext(AuthContext);
     const navigation = useNavigation();
     const apiUrl = Platform.OS === 'ios' ? 'http://127.0.0.1:8000/api/' : 'http://10.0.2.2:8000/api/';
-
+    
+    const getImageUrl = (productId) => `${apiUrl}get_product_image/${productId}`;
+    
     useFocusEffect(
         useCallback(() => {
             axios.get(`${apiUrl}get_all_products/`)
@@ -118,25 +120,28 @@ const HomeScreen = () => {
         });
     };
 
-    const getImageUrl = (productId) => `${apiUrl}get_product_image/${productId}`;
-
     const filteredProducts = products.filter(product =>
         product.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    const renderProduct = ({ item }) => (
-        <TouchableOpacity style={styles.product} onPress={() => navigation.navigate('Product', { productId: item.id })}>
-            <Image
-                style={styles.productImage}
-                source={{ uri: getImageUrl(item.id) }}
-            />
-            <Text style={styles.productName}>{item.name}</Text>
-            <Text style={styles.productPrice}>Cena: {item.price} zł</Text>
-            <TouchableOpacity style={styles.addButton} onPress={() => addToCart(item.id)}>
-                <Text style={styles.buttonText}>Do koszyka</Text>
+    const renderProduct = ({ item }) => {
+        // Ograniczenie długości nazwy produktu do maksymalnie 30 znaków
+        const productName = item.name.length > 15 ? item.name.substring(0, 15) + '...' : item.name;
+    
+        return (
+            <TouchableOpacity style={styles.product} onPress={() => navigation.navigate('Product', { productId: item.id })}>
+                <Image
+                    style={styles.productImage}
+                    source={{ uri: getImageUrl(item.id) }}
+                />
+                <Text style={styles.productName}>{productName}</Text>
+                <Text style={styles.productPrice}>Cena: {item.price} zł</Text>
+                <TouchableOpacity style={styles.addButton} onPress={() => addToCart(item.id)}>
+                    <Text style={styles.buttonText}>Do koszyka</Text>
+                </TouchableOpacity>
             </TouchableOpacity>
-        </TouchableOpacity>
-    );
+        );
+    };
 
     const toggleTextInputVisibility = () => {
         setIsTextInputVisible(!isTextInputVisible);
@@ -198,7 +203,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     productName: {
-        fontSize: 25,
+        fontSize: 22,
         fontWeight: 'bold',
     },
     productImage: {
