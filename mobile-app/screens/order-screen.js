@@ -32,6 +32,7 @@ const OrderScreen = () => {
         useCallback(() => {
             fetchCart();
             fetchUserData();
+            console.log(userIsLoading, cartIsLoading);
         }, [user, authTokens])
     );
 
@@ -53,7 +54,9 @@ const OrderScreen = () => {
                 setUserIsLoading(false);
             }
         } 
-        
+        else {
+            setUserIsLoading(false);
+        }
     };
 
     const fetchCart = async () => {
